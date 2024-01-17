@@ -1,2 +1,3 @@
 # CannibalisticZombies
-Programmer: Mikyle Mosquera
+Mikyle Mosquera: Game Director / Programmer
+Michael Poorun: Game Director / Game Designer
