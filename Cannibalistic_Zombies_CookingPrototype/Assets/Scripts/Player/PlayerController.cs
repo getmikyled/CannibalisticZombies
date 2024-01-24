@@ -21,27 +21,48 @@ namespace CannibalisticZombies.Restaurant
     {
         public PlayerState playerState { get; private set; }
 
+        private Rigidbody rb;
+
+        [Header("Properties")]
+        [SerializeField] private float movementSpeed = 1f;
+
+        private float horizontalInput;
+        private float verticalInput;
+        private Vector3 moveDirection;
+
         public void SetPlayerState(PlayerState argState)
         {
             playerState = argState;
         }
 
+        private void Start()
+        {
+            rb = GetComponent<Rigidbody>();
+        }
+
         private void Update()
         {
             TryMovePlayer();
+            LimitSpeed();
         }
 
         private void TryMovePlayer()
         {
-            float horizontalInput = Input.GetAxisRaw("Horizontal");
-            
-            if (horizontalInput != 0f)
+            horizontalInput = Input.GetAxisRaw("Horizontal");
+            verticalInput = Input.GetAxisRaw("Vertical");
+
+            moveDirection = (transform.forward * verticalInput) + (transform.right * horizontalInput);
+            rb.AddForce(moveDirection.normalized * movementSpeed, ForceMode.Force);
+        }
+
+        private void LimitSpeed()
+        {
+            Vector3 currentVelocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+
+            if (currentVelocity.magnitude > movementSpeed)
             {
-                transform.forward = new Vector3(horizontalInput, 0, 0);
-            }
-            else
-            {
-                transform.forward = new Vector3(0, 0, -1);
+                Vector3 limitedVelocity = currentVelocity.normalized * movementSpeed;
+                rb.velocity = new Vector3(limitedVelocity.x, rb.velocity.y, limitedVelocity.z);
             }
         }
     }
