@@ -2,20 +2,20 @@
 #
 # Get latest from https://github.com/github/gitignore/blob/main/Unity.gitignore
 #
-Cannibalistic_Zombies_CookingPrototype/[Ll]ibrary/
-Cannibalistic_Zombies_CookingPrototype/[Tt]emp/
-Cannibalistic_Zombies_CookingPrototype/[Oo]bj/
-Cannibalistic_Zombies_CookingPrototype/[Bb]uild/
-Cannibalistic_Zombies_CookingPrototype/[Bb]uilds/
-Cannibalistic_Zombies_CookingPrototype/[Ll]ogs/
-Cannibalistic_Zombies_CookingPrototype/[Uu]ser[Ss]ettings/
+CannibalisticZombies/[Ll]ibrary/
+CannibalisticZombies/[Tt]emp/
+CannibalisticZombies/[Oo]bj/
+CannibalisticZombies/[Bb]uild/
+CannibalisticZombies/[Bb]uilds/
+CannibalisticZombies/[Ll]ogs/
+CannibalisticZombies/[Uu]ser[Ss]ettings/
 
 # MemoryCaptures can get excessive in size.
 # They also could contain extremely sensitive data
-/[Mm]emoryCaptures/
+CannibalisticZombies/[Mm]emoryCaptures/
 
 # Recordings can get excessive in size
-/[Rr]ecordings/
+CannibalisticZombies/[Rr]ecordings/
 
 # Uncomment this line if you wish to ignore the asset store tools plugin
 # /[Aa]ssets/AssetStoreTools*
