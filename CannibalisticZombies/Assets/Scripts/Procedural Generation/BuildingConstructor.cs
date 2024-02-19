@@ -1,18 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
-public class BuildingConstructor : MonoBehaviour
+namespace CannibalisticZombies.ProceduralGeneration
 {
-    // Start is called before the first frame update
-    void Start()
+    ///-////////////////////////////////////////////////////////////////////
+    ///
+    public class BuildingConstructor: MonoBehaviour
     {
-        
+        private static int MIN_WIDTH = 2;
+        private static int MIN_HEIGHT = 2;
+
+        private void Start()
+        {
+            BuildingGenerator newBuilding = new BuildingGenerator(2, 2, 2);
+        }
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }
