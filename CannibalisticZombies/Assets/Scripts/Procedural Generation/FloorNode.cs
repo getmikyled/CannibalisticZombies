@@ -12,7 +12,7 @@ namespace CannibalisticZombies.ProceduralGeneration
         private int gridHeight;
         private int floorNumber;
 
-        private RoomNode[,] rooms;
+        public RoomNode[,] rooms;
         public RoomNode stairsNode;
 
 
