@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 namespace CannibalisticZombies.ProceduralGeneration
@@ -22,8 +23,7 @@ namespace CannibalisticZombies.ProceduralGeneration
         public int roomIndex = 0;
         public RoomNode rootNode;
         
-        ///-////////////////////////////////////////////////////////////////////
-        ///
+        ///-///////////////////////////////////oot
         public BuildingGenerator(int argGridWidth, int argGridHeight, int argFloorCount)
         {
             gridWidth = argGridWidth;
@@ -34,10 +34,27 @@ namespace CannibalisticZombies.ProceduralGeneration
             roomsList = new RoomType[roomCount];
             GenerateRoomPool();
 
+            // GENERATE FLOORS
             roomIndex = 0;
             for (int i = 0; i < floors.Length; i++)
             {
                 floors[i] = GenerateFloor(i);
+            }
+
+            // IDENTIFY ROOT NODE
+            bool foundRootNode = false;
+            for (int i = 0; i < gridHeight; i++)
+            {
+                if (foundRootNode) break;
+                for (int j = 0; j < gridWidth; j++)
+                {
+                    if (floors[0].rooms[i, j].roomType != RoomType.Stairs && floors[0].rooms[i, j].roomType != RoomType.Basement)
+                    {
+                        rootNode = floors[0].rooms[i, j];
+                        foundRootNode = true;
+                        break;
+                    }
+                }
             }
         }
 
@@ -80,14 +97,6 @@ namespace CannibalisticZombies.ProceduralGeneration
             int i = Random.Range(0, rootRoomTypes.Count);
             AddRoom(rootRoomTypes[i]);
             rootRoomTypes.RemoveAt(i);
-            
-            // Add garage
-            float hasGarage = Random.value;
-            if (roomCount > 5 && hasGarage < GARAGE_CHANCE)
-            {
-                shuffleStartIndex = 2;
-                AddRoom(RoomType.Garage);
-            }
 
             // Add remaining rooms
             foreach(RoomType roomType in rootRoomTypes)

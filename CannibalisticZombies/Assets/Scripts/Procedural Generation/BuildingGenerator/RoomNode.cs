@@ -30,11 +30,14 @@ namespace CannibalisticZombies.ProceduralGeneration
         public int floorNum { get; private set; }
         public Vector2Int floorPos { get; private set; }
 
+        public Dictionary<RoomNode, WallType> connectedRooms { get; private set; }
+
         ///-////////////////////////////////////////////////////////////////////
         ///
         public RoomNode(RoomType argRoomType)
         {
             roomType = argRoomType;
+            connectedRooms = new Dictionary<RoomNode, WallType>();
         }
 
         ///-////////////////////////////////////////////////////////////////////
@@ -58,6 +61,27 @@ namespace CannibalisticZombies.ProceduralGeneration
             floorNum = argFloorNum;
         }
 
+        public bool IsConnectedTo(RoomNode node)
+        {
+            if (connectedRooms.ContainsKey(node)) return true;
+            return false;
+        }
+
+        public void AddConnection(RoomNode argRoom, WallType argWallType)
+        {
+            if (connectedRooms.ContainsKey(argRoom)) return;
+            connectedRooms.Add(argRoom, argWallType);
+        }
+
+        public bool HasDoor()
+        {
+            int doorCount = 0;
+            foreach(RoomNode room in connectedRooms.Keys)
+            {
+                if (connectedRooms[room] == WallType.Door) doorCount++;
+            }
+            return connectedRooms.Count > 0;
+        }
 
     }
 

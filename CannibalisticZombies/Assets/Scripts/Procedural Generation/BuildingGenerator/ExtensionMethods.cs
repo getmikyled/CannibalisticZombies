@@ -5,8 +5,12 @@ using UnityEngine;
 
 namespace CannibalisticZombies.ProceduralGeneration
 {
+    ///-////////////////////////////////////////////////////////////////////
+    ///
     public static class ExtensionMethods
     {
+        ///-////////////////////////////////////////////////////////////////////
+        ///
         public static Vector2Int Randomize(this Vector2Int vector, int xRange, int yRange)
         {
             xRange = Random.Range(0, xRange);
@@ -15,6 +19,8 @@ namespace CannibalisticZombies.ProceduralGeneration
             return new Vector2Int(xRange, yRange);
         }
 
+        ///-////////////////////////////////////////////////////////////////////
+        ///
         public static void Shuffle<T>(this T[] list, int startingIndex = 1)
         {
             for (int i = startingIndex; i < list.Length; i++)

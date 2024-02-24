@@ -6,6 +6,15 @@ namespace CannibalisticZombies.ProceduralGeneration
 {
     ///-////////////////////////////////////////////////////////////////////
     ///
+    public enum Direction
+    {
+        North,
+        South,
+        East,
+        West
+    }
+    ///-////////////////////////////////////////////////////////////////////
+    ///
     public class FloorNode : Node
     {
         private int gridWidth;
@@ -31,10 +40,21 @@ namespace CannibalisticZombies.ProceduralGeneration
             // CREATE STAIRS
             if (downStairsPos.x == -1 && downStairsPos.y == -1)
             {
+                // Prevents basement stairs from being in the first slot
+                while (randPos.x == 0 && randPos.y == 0 )
+                {
+                    randPos = new Vector2Int().Randomize(gridWidth, gridHeight);
+                }
+
                 rooms[randPos.x, randPos.y] = SetRoom(RoomType.Basement, randPos);
             }
             else
             {
+                // Prevents stairs from being in the first slot
+                while (randPos.x == 0 && randPos.y == 0)
+                {
+                    randPos = new Vector2Int().Randomize(gridWidth, gridHeight);
+                }
                 rooms[downStairsPos.x, downStairsPos.y] = SetRoom(RoomType.Empty, downStairsPos);
             }
 
@@ -74,7 +94,26 @@ namespace CannibalisticZombies.ProceduralGeneration
             return newRoom;
         }
 
+        public RoomNode GetAdjacentRoom(Direction argDirection, Vector2Int argRoomPos)
+        {
+            switch (argDirection)
+            {
+                case Direction.North:
+                    if (argRoomPos.y + 1 >= gridHeight) break;
+                    return rooms[argRoomPos.x, argRoomPos.y + 1];
+                case Direction.South:
+                    if (argRoomPos.y - 1 < 0) break;
+                    return rooms[argRoomPos.x, argRoomPos.y - 1];
 
+                case Direction.East:
+                    if (argRoomPos.x + 1 >= gridWidth) break;
+                    return rooms[argRoomPos.x + 1, argRoomPos.y];
+                case Direction.West:
+                    if (argRoomPos.x - 1 < 0) break;
+                    return rooms[argRoomPos.x , argRoomPos.y];
+            }
+            return null;
+        }
     }
 
 }
