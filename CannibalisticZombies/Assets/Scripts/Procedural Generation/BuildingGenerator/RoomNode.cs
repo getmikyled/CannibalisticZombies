@@ -6,6 +6,19 @@ namespace CannibalisticZombies.ProceduralGeneration
 {
     ///-////////////////////////////////////////////////////////////////////
     ///
+    public enum WallType
+    {
+        Wall,
+        Door,
+        SecondaryDoor,
+        EmptyDoor,
+        Window,
+        Entrance,
+        Empty
+    }
+
+    ///-////////////////////////////////////////////////////////////////////
+    ///
     public enum RoomType
     {
         Bedroom = 0,
@@ -30,14 +43,14 @@ namespace CannibalisticZombies.ProceduralGeneration
         public int floorNum { get; private set; }
         public Vector2Int floorPos { get; private set; }
 
-        public Dictionary<RoomNode, WallType> connectedRooms { get; private set; }
+        public Dictionary<RoomNode, WallType> adjacentRooms { get; private set; }
 
         ///-////////////////////////////////////////////////////////////////////
         ///
         public RoomNode(RoomType argRoomType)
         {
             roomType = argRoomType;
-            connectedRooms = new Dictionary<RoomNode, WallType>();
+            adjacentRooms = new Dictionary<RoomNode, WallType>();
         }
 
         ///-////////////////////////////////////////////////////////////////////
@@ -61,28 +74,94 @@ namespace CannibalisticZombies.ProceduralGeneration
             floorNum = argFloorNum;
         }
 
-        public bool IsConnectedTo(RoomNode node)
+        ///-////////////////////////////////////////////////////////////////////
+        ///
+        public bool IsAdjacentTo(RoomNode node)
         {
-            if (connectedRooms.ContainsKey(node)) return true;
+            if (adjacentRooms.ContainsKey(node)) return true;
             return false;
         }
 
-        public void AddConnection(RoomNode argRoom, WallType argWallType)
+        ///-////////////////////////////////////////////////////////////////////
+        ///
+        public WallType GetAdjacentRoomWallType(RoomNode room)
         {
-            if (connectedRooms.ContainsKey(argRoom)) return;
-            connectedRooms.Add(argRoom, argWallType);
+            return adjacentRooms[room];
         }
 
+        ///-////////////////////////////////////////////////////////////////////
+        ///
+        public void SetAdjacentRoom(RoomNode argRoom, WallType argWallType)
+        {
+            if (adjacentRooms.ContainsKey(argRoom))
+            {
+                adjacentRooms[argRoom] = argWallType;
+            }
+            else
+            {
+                adjacentRooms.Add(argRoom, argWallType);
+            }
+        }
+
+        ///-////////////////////////////////////////////////////////////////////
+        ///
         public bool HasDoor()
         {
             int doorCount = 0;
-            foreach(RoomNode room in connectedRooms.Keys)
+            foreach(RoomNode room in adjacentRooms.Keys)
             {
-                if (connectedRooms[room] == WallType.Door) doorCount++;
+                if (adjacentRooms[room] == WallType.Door) doorCount++;
             }
-            return connectedRooms.Count > 0;
+            return adjacentRooms.Count > 0;
         }
 
-    }
+        ///-////////////////////////////////////////////////////////////////////
+        ///
+        public bool HasSecondaryDoor()
+        {
+            int doorCount = 0;
+            foreach (RoomNode room in adjacentRooms.Keys)
+            {
+                if (adjacentRooms[room] == WallType.SecondaryDoor) doorCount++;
+            }
+            return adjacentRooms.Count > 0;
+        }
 
+        ///-////////////////////////////////////////////////////////////////////
+        ///
+        public bool HasDoorsInAdjacentRooms()
+        {
+            foreach (RoomNode room in adjacentRooms.Keys)
+            {
+                if (adjacentRooms[room] == WallType.Empty || adjacentRooms[room] == WallType.SecondaryDoor)
+                {
+                    if (room.HasDoor()) return true;
+                }
+            }
+            return false;
+        }
+
+        ///-////////////////////////////////////////////////////////////////////
+        ///
+        public bool HasEntrance()
+        {
+            foreach (WallType wallType in adjacentRooms.Values)
+            {
+                if (wallType == WallType.Entrance) return true;
+            }
+            return false;
+        }
+
+        ///-////////////////////////////////////////////////////////////////////
+        ///
+        public bool NeedsConnection()
+        {
+            if ((roomType == RoomType.Bedroom && HasDoor() == false) ||
+                (HasDoor() == false && HasSecondaryDoor() == false))
+            {
+                return true;
+            }
+            return false;
+        }
+    }
 }
