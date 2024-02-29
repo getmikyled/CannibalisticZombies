@@ -13,11 +13,11 @@ namespace CannibalisticZombies {
         // HealthUI displays current health.
         // Calling SetHealth() with new Damage amount update healthBar to that amount.
         [SerializeField] private Image healthBar;
-        public float currentHealth;//unnecessary in implementation
+        public float currentHealth; //unnecessary in implementation
         public float animationSpeed; //Rate at which damage bar fills/empties per frame
-        public Color damageColor;//Color of bar when take damage (RED)
+        public Color damageColor; //Color of bar when take damage (RED)
         public Color healColor; //Color of bar when heals/removes damage (GREEN)
-        private float fillTarget;//Decimal amount of damage bar to be filled
+        private float fillTarget; //Decimal amount of damage bar to be filled
 
 
 
@@ -38,7 +38,7 @@ namespace CannibalisticZombies {
 
             fillTarget = 1 - newHealth / maxHealth;
             fillTarget = Mathf.Clamp(fillTarget, 0, 1);
-            currentHealth = Mathf.Clamp(newHealth, 0, maxHealth);//Remove in actual implementation
+            currentHealth = Mathf.Clamp(newHealth, 0, maxHealth); //Remove in actual implementation
 
 
         }
