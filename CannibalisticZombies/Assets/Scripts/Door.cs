@@ -18,6 +18,7 @@ namespace CannibalisticZombies
     ///
     public class Door : InteractionObject
     {
+
         /// this is a private boolean that checks if the door is either closed or open, we assume its closed at the start  
         private bool doorOpen = false;
     
@@ -41,7 +42,8 @@ namespace CannibalisticZombies
                 doorOpen = true;
             }
             /// dont let the UI show up on screen once its interacted with
-            keyBindUI.SetActive(false);
+            base.SetKeyBindUI(false);
+            
         }
 
         //-/////////////////////////////////////////////////////////////////////
@@ -53,22 +55,19 @@ namespace CannibalisticZombies
         /// 
         public override void OnPointerEnter(PointerEventData eventData)
         {
-            /// grab the textComponent from the keyBindUI, which is a child (GetComponentInChildren) of the canvas that seralizes the keyBind Field.
-            Text keyBindText = keyBindUI.GetComponentInChildren<Text>();
-
             /// if the door is open 
             if(doorOpen)
             {
                 /// show a specific text to close door
-                keyBindText.text = "Press E to Close Door";
+                base.SetTextOfKeyBind("Press E to Close Door");
             }
             else
             {
                 /// else just show UI to open the door
-                keyBindText.text = "Press E to Open Door";
+                base.SetTextOfKeyBind("Press E to Open Door");
             }
-            /// show the UI on the screen
-            keyBindUI.SetActive(true);
+            /// set the UI to true and make it show up on screen
+            base.OnPointerEnter(eventData);
         }
 
     }

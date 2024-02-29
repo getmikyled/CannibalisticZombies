@@ -41,7 +41,7 @@ namespace CannibalisticZombies
                 lightOn = true;
             }
             /// dont let the UI show up on screen once its interacted with
-            keyBindUI.SetActive(false);
+             base.SetKeyBindUI(false);
         }
 
         //-/////////////////////////////////////////////////////////////////////
@@ -53,22 +53,20 @@ namespace CannibalisticZombies
         /// 
         public override void OnPointerEnter(PointerEventData eventData)
         {
-            /// grab the textComponent from the keyBindUI, which is a child (GetComponentInChildren) of the canvas that seralizes the keyBind Field.
-            Text keyBindText = keyBindUI.GetComponentInChildren<Text>();
 
             /// if the door is open 
             if(lightOn)
             {
                 /// show a specific text to turn off light
-                keyBindText.text = "Press E to turn off Light";
+                base.SetTextOfKeyBind("Press E to turn off Light");
             }
             else
             {
                 /// else just show UI to turn onLight
-                keyBindText.text = "Press E to turn on Light";
+                base.SetTextOfKeyBind("Press E to turn on Light");
             }
-            /// show the UI on the screen
-            keyBindUI.SetActive(true);
+            /// set the UI to true and make it show up on screen
+            base.OnPointerEnter(eventData);
         }
 
 

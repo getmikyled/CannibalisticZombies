@@ -344,6 +344,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   keyBindUI: {fileID: 272564394}
+  keyBindText: {fileID: 1520288849}
 --- !u!1 &424594862
 GameObject:
   m_ObjectHideFlags: 0
@@ -463,6 +464,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   keyBindUI: {fileID: 272564394}
+  keyBindText: {fileID: 1520288849}
 --- !u!1 &496802364
 GameObject:
   m_ObjectHideFlags: 0
@@ -702,6 +704,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   keyBindUI: {fileID: 272564394}
+  keyBindText: {fileID: 1520288849}
 --- !u!1 &888522715
 GameObject:
   m_ObjectHideFlags: 0

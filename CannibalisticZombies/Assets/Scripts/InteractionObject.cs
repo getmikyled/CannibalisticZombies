@@ -18,7 +18,10 @@ namespace CannibalisticZombies
     public class InteractionObject : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         ///  This is a variable that is used to grab the canvas associated with the keyBind UI
-        [SerializeField] public GameObject keyBindUI;
+        [SerializeField] private GameObject keyBindUI;
+
+        ///  This is a variable that is used to grab the text associated with the keyBind UI
+        [SerializeField] private Text keyBindText;
 
         //-/////////////////////////////////////////////////////////////////////
         ///
@@ -54,6 +57,28 @@ namespace CannibalisticZombies
         {
             /// dont show UI on screen
             keyBindUI.SetActive(false);
+        }
+
+        //-/////////////////////////////////////////////////////////////////////
+        ///
+        /// SetTextofKeyBind sets the text of the UI to something different. This way
+        /// we can mantain the protection level of the Text for the keybind. 
+        /// We take in a string and change the KeyBindText
+        ///
+        public void SetTextOfKeyBind(string replace)
+        {
+            keyBindText.text = replace;
+        }
+
+        //-/////////////////////////////////////////////////////////////////////
+        ///
+        /// SetKeyBindUI sets the UI to active or not active. This way
+        /// we can mantain the protection level of the UI for the keybind. 
+        /// We take in a bool.
+        ///
+        public void SetKeyBindUI(bool active)
+        {
+            keyBindUI.SetActive(active);
         }
     }
 }

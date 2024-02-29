@@ -29,7 +29,7 @@ namespace CannibalisticZombies
             /// remove game Object from screen
             gameObject.SetActive(false);
             /// dont let the UI show up on screen once its interacted with
-            keyBindUI.SetActive(false);
+            base.SetKeyBindUI(false);
         }
 
         //-/////////////////////////////////////////////////////////////////////
@@ -41,14 +41,11 @@ namespace CannibalisticZombies
         /// 
         public override void OnPointerEnter(PointerEventData eventData)
         {
-            /// grab the textComponent from the keyBindUI, which is a child (GetComponentInChildren) of the canvas that seralizes the keyBind Field.
-            Text keyBindText = keyBindUI.GetComponentInChildren<Text>();
-
             /// set what text should show up
-            keyBindText.text = "Press E to Pickup";
+            base.SetTextOfKeyBind("Press E to Pickup");
         
-            /// set the UI to true and make it show up on screen
-            keyBindUI.SetActive(true);
+           /// set the UI to true and make it show up on screen
+            base.OnPointerEnter(eventData);
         }
     }
 }
