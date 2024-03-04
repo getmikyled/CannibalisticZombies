@@ -4,6 +4,10 @@ using UnityEngine;
 
 namespace CannibalisticZombies
 {
+    ///-/////////////////////////////////////////////////////////////////////
+    ///
+    /// Player Movement Code
+    /// 
     public class PlayerCharacterController : MonoBehaviour
     {
         [SerializeField] float moveSpeed;
