@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -10,9 +11,6 @@ namespace CannibalisticZombies.ProceduralGeneration
     ///
     public class BuildingGenerator
     {
-        [Range(0f, 1f)]
-        private const float GARAGE_CHANCE = 0.5f;
-
         // Building Properties
         private int gridWidth;
         private int gridHeight;
@@ -57,6 +55,8 @@ namespace CannibalisticZombies.ProceduralGeneration
                     }
                 }
             }
+
+            DetermineRoomsWalls();
         }
 
         ///-////////////////////////////////////////////////////////////////////
@@ -78,8 +78,6 @@ namespace CannibalisticZombies.ProceduralGeneration
         ///
         private void GenerateRoomPool()
         {
-            // RoomCounts of 3 must have these 3 rooms
-            float randomRoomValue = Random.value;
             int shuffleStartIndex = 1;
             if (roomCount == 3)
             {
@@ -131,18 +129,24 @@ namespace CannibalisticZombies.ProceduralGeneration
                     RoomNode westRoom = floor.GetAdjacentRoom(Direction.West, room.floorPos);
                     SetRoomWalls(Direction.West, room, westRoom);
 
-                    // FORCE DOOR on either NORTH or SOUTH
-                    if (room.NeedsConnection() == false)
+                    // FORCE DOOR
+                    if (room.NeedsConnection())
                     {
                         if (northRoom != null)
                         {
-                            room.SetAdjacentRoom(northRoom, WallType.SecondaryDoor);
-                            SetConnectionBetweenRooms(WallType.Door, room, northRoom);
+                            SetConnectionBetweenRooms(WallType.SecondaryDoor, room, northRoom);
                         }
                         else if (southRoom != null)
                         {
-                            room.SetAdjacentRoom(southRoom, WallType.SecondaryDoor);
-                            SetConnectionBetweenRooms(WallType.Door, room, southRoom);
+                            SetConnectionBetweenRooms(WallType.SecondaryDoor, room, southRoom);
+                        }
+                        else if (eastRoom != null)
+                        {
+                            SetConnectionBetweenRooms(WallType.SecondaryDoor, room, eastRoom);
+                        }
+                        else if (westRoom != null)
+                        {
+                            SetConnectionBetweenRooms(WallType.SecondaryDoor, room, westRoom);
                         }
                     }
                 }
@@ -153,8 +157,18 @@ namespace CannibalisticZombies.ProceduralGeneration
         ///
         private void SetRoomWalls(Direction argDirection, RoomNode currentRoom, RoomNode adjacentRoom)
         {
-            WallType wallType = DetermineWallType(currentRoom, adjacentRoom, argDirection);
-            SetConnectionBetweenRooms(wallType, currentRoom, adjacentRoom);
+            WallType wallType = DetermineWallType(currentRoom, adjacentRoom);
+            if (adjacentRoom != null)
+            {
+                SetConnectionBetweenRooms(wallType, currentRoom, adjacentRoom);
+                Debug.Log(currentRoom.roomType + " " + adjacentRoom.roomType + " " + wallType + " " + argDirection);
+            }
+            else
+            {
+                RoomNode newRoom = new RoomNode(argDirection, currentRoom);
+                SetConnectionBetweenRooms(wallType, currentRoom, newRoom);
+                Debug.Log(currentRoom.roomType + " " + newRoom.roomType + " " + wallType + " " + argDirection);
+            }
         }
 
         ///-////////////////////////////////////////////////////////////////////
@@ -176,7 +190,7 @@ namespace CannibalisticZombies.ProceduralGeneration
         #region Determine Wall Type
         ///-////////////////////////////////////////////////////////////////////
         ///
-        private WallType DetermineWallType(RoomNode currentRoom, RoomNode adjacentRoom, Direction argDirection)
+        private WallType DetermineWallType(RoomNode currentRoom, RoomNode adjacentRoom)
         {
             // If current room is root node and doesnt have the entrance set yet.
             if (currentRoom == rootNode && currentRoom.HasEntrance() == false && adjacentRoom == null)
@@ -216,6 +230,8 @@ namespace CannibalisticZombies.ProceduralGeneration
                     return DetermineStairsWallType(currentRoom, adjacentRoom);
                 case RoomType.Empty:
                     return DetermineEmptyWallType(currentRoom, adjacentRoom);
+                case RoomType.Basement:
+                    return DetermineBasementWallType(currentRoom, adjacentRoom);
                 default:
                     return WallType.Wall;
             }
@@ -233,25 +249,27 @@ namespace CannibalisticZombies.ProceduralGeneration
                     if (adjacentRoom.HasDoor() || adjacentRoom.HasSecondaryDoor()) return WallType.Wall;
                     return WallType.SecondaryDoor;
                 case RoomType.Kitchen:
-                    if (currentRoom.HasDoor() && currentRoom.HasDoorsInAdjacentRooms()) return WallType.Wall;
+                    if (currentRoom.HasDoor() || currentRoom.HasDoorsInAdjacentRooms()) return WallType.Wall;
                     return WallType.Door;
                 case RoomType.DiningRoom:
-                    if (currentRoom.HasDoor() && currentRoom.HasDoorsInAdjacentRooms()) return WallType.Wall;
+                    if (currentRoom.HasDoor() || currentRoom.HasDoorsInAdjacentRooms()) return WallType.Wall;
                     return WallType.Door;
                 case RoomType.LivingRoom:
-                    if (currentRoom.HasDoor() && currentRoom.HasDoorsInAdjacentRooms()) return WallType.Wall;
+                    if (currentRoom.HasDoor() || currentRoom.HasDoorsInAdjacentRooms()) return WallType.Wall;
                     return WallType.Door;
                 case RoomType.Hallway:
-                    if (currentRoom.HasDoor() && currentRoom.HasDoorsInAdjacentRooms()) return WallType.Wall;
+                    if (currentRoom.HasDoor() || currentRoom.HasDoorsInAdjacentRooms()) return WallType.Wall;
                     return WallType.Door;
                 case RoomType.Office:
                     return WallType.Empty;
                 case RoomType.Stairs:
-                    if (currentRoom.HasDoor() && currentRoom.HasDoorsInAdjacentRooms()) return WallType.Wall;
+                    if (currentRoom.HasDoor() || currentRoom.HasDoorsInAdjacentRooms()) return WallType.Wall;
                     return WallType.Door;
                 case RoomType.Empty:
-                    if (currentRoom.HasDoor() && currentRoom.HasDoorsInAdjacentRooms()) return WallType.Wall;
+                    if (currentRoom.HasDoor() || currentRoom.HasDoorsInAdjacentRooms()) return WallType.Wall;
                     return WallType.Door;
+                case RoomType.Basement:
+                    return WallType.Wall;
                 default: 
                     return WallType.Wall;
             }
@@ -286,6 +304,8 @@ namespace CannibalisticZombies.ProceduralGeneration
                     return WallType.Door;
                 case RoomType.Empty:
                     return WallType.Door;
+                case RoomType.Basement:
+                    return WallType.Wall;
                 default:
                     return WallType.Wall;
             }
@@ -298,10 +318,10 @@ namespace CannibalisticZombies.ProceduralGeneration
             switch (adjacentRoom.roomType)
             {
                 case RoomType.Bedroom:
-                    if (adjacentRoom.HasDoor() && adjacentRoom.HasDoorsInAdjacentRooms()) return WallType.Wall;
+                    if (adjacentRoom.HasDoor() || adjacentRoom.HasDoorsInAdjacentRooms()) return WallType.Wall;
                     return WallType.Door;
                 case RoomType.Bathroom:
-                    if (adjacentRoom.HasDoor() && adjacentRoom.HasDoorsInAdjacentRooms()) return WallType.Wall;
+                    if (adjacentRoom.HasDoor() || adjacentRoom.HasDoorsInAdjacentRooms()) return WallType.Wall;
                     return WallType.Door;
                 case RoomType.Kitchen:
                     return WallType.Empty;
@@ -312,12 +332,15 @@ namespace CannibalisticZombies.ProceduralGeneration
                 case RoomType.Hallway:
                     return WallType.Empty;
                 case RoomType.Office:
-                    if (adjacentRoom.HasDoor() && adjacentRoom.HasDoorsInAdjacentRooms()) return WallType.Wall;
+                    if (adjacentRoom.HasDoor() || adjacentRoom.HasDoorsInAdjacentRooms()) return WallType.Wall;
                     return WallType.Door;
                 case RoomType.Stairs:
                     return WallType.Door;
                 case RoomType.Empty:
                     return WallType.Door;
+                case RoomType.Basement:
+                    if (adjacentRoom.HasSecondaryDoor()) return WallType.Wall;
+                    return WallType.SecondaryDoor;
                 default:
                     return WallType.Wall;
             }
@@ -325,15 +348,15 @@ namespace CannibalisticZombies.ProceduralGeneration
 
         ///-////////////////////////////////////////////////////////////////////
         ///
-        public WallType DetermineDiningRoomWallType(RoomNode argCurrentRoom, RoomNode adjacentRoom)
+        public WallType DetermineDiningRoomWallType(RoomNode currentRoom, RoomNode adjacentRoom)
         {
             switch (adjacentRoom.roomType)
             {
                 case RoomType.Bedroom:
-                    if (adjacentRoom.HasDoor() && adjacentRoom.HasDoorsInAdjacentRooms()) return WallType.Wall;
+                    if (adjacentRoom.HasDoor() || adjacentRoom.HasDoorsInAdjacentRooms()) return WallType.Wall;
                     return WallType.Door;
                 case RoomType.Bathroom:
-                    if (adjacentRoom.HasDoor() && adjacentRoom.HasDoorsInAdjacentRooms()) return WallType.Wall;
+                    if (adjacentRoom.HasDoor() || adjacentRoom.HasDoorsInAdjacentRooms()) return WallType.Wall;
                     return WallType.Door;
                 case RoomType.Kitchen:
                     return WallType.Empty;
@@ -342,7 +365,7 @@ namespace CannibalisticZombies.ProceduralGeneration
                 case RoomType.LivingRoom:
                     return WallType.Empty;
                 case RoomType.Office:
-                    if (adjacentRoom.HasDoor() && adjacentRoom.HasDoorsInAdjacentRooms()) return WallType.Wall;
+                    if (adjacentRoom.HasDoor() || adjacentRoom.HasDoorsInAdjacentRooms()) return WallType.Wall;
                     return WallType.Door;
                 case RoomType.Hallway:
                     return WallType.Empty;
@@ -350,6 +373,9 @@ namespace CannibalisticZombies.ProceduralGeneration
                     return WallType.Door;
                 case RoomType.Empty:
                     return WallType.Door;
+                case RoomType.Basement:
+                    if (adjacentRoom.HasSecondaryDoor()) return WallType.Wall;
+                    return WallType.SecondaryDoor;
                 default:
                     return WallType.Wall;
             }
@@ -362,10 +388,10 @@ namespace CannibalisticZombies.ProceduralGeneration
             switch (adjacentRoom.roomType)
             {
                 case RoomType.Bedroom:
-                    if (adjacentRoom.HasDoor() && adjacentRoom.HasDoorsInAdjacentRooms()) return WallType.Wall;
+                    if (adjacentRoom.HasDoor() || adjacentRoom.HasDoorsInAdjacentRooms()) return WallType.Wall;
                     return WallType.Door;
                 case RoomType.Bathroom:
-                    if (adjacentRoom.HasDoor() && adjacentRoom.HasDoorsInAdjacentRooms()) return WallType.Wall;
+                    if (adjacentRoom.HasDoor() || adjacentRoom.HasDoorsInAdjacentRooms()) return WallType.Wall;
                     return WallType.Door;
                 case RoomType.Kitchen:
                     return WallType.Empty;
@@ -374,7 +400,7 @@ namespace CannibalisticZombies.ProceduralGeneration
                 case RoomType.LivingRoom:
                     return WallType.Empty;
                 case RoomType.Office:
-                    if (adjacentRoom.HasDoor() && adjacentRoom.HasDoorsInAdjacentRooms()) return WallType.Wall;
+                    if (adjacentRoom.HasDoor() || adjacentRoom.HasDoorsInAdjacentRooms()) return WallType.Wall;
                     return WallType.Door;
                 case RoomType.Hallway:
                     return WallType.Empty;
@@ -382,6 +408,9 @@ namespace CannibalisticZombies.ProceduralGeneration
                     return WallType.Door;
                 case RoomType.Empty:
                     return WallType.Door;
+                case RoomType.Basement:
+                    if (adjacentRoom.HasSecondaryDoor()) return WallType.Wall;
+                    return WallType.SecondaryDoor;
                 default:
                     return WallType.Wall;
             }
@@ -396,28 +425,30 @@ namespace CannibalisticZombies.ProceduralGeneration
                 case RoomType.Bedroom:
                     return WallType.Empty;
                 case RoomType.Bathroom:
-                    if (adjacentRoom.HasDoor() && adjacentRoom.HasDoorsInAdjacentRooms()) return WallType.Wall;
+                    if (adjacentRoom.HasDoor() || adjacentRoom.HasDoorsInAdjacentRooms()) return WallType.Wall;
                     return WallType.SecondaryDoor;
                 case RoomType.Kitchen:
-                    if (currentRoom.HasDoor() && currentRoom.HasDoorsInAdjacentRooms()) return WallType.Wall;
+                    if (currentRoom.HasDoor() || currentRoom.HasDoorsInAdjacentRooms()) return WallType.Wall;
                     return WallType.Door;
                 case RoomType.DiningRoom:
-                    if (currentRoom.HasDoor() && currentRoom.HasDoorsInAdjacentRooms()) return WallType.Wall;
+                    if (currentRoom.HasDoor() || currentRoom.HasDoorsInAdjacentRooms()) return WallType.Wall;
                     return WallType.Door;
                 case RoomType.LivingRoom:
-                    if (currentRoom.HasDoor() && currentRoom.HasDoorsInAdjacentRooms()) return WallType.Wall;
+                    if (currentRoom.HasDoor() || currentRoom.HasDoorsInAdjacentRooms()) return WallType.Wall;
                     return WallType.Door;
                 case RoomType.Office:
                     return WallType.Empty;
                 case RoomType.Hallway:
-                    if (currentRoom.HasDoor() && currentRoom.HasDoorsInAdjacentRooms()) return WallType.Wall;
+                    if (currentRoom.HasDoor() || currentRoom.HasDoorsInAdjacentRooms()) return WallType.Wall;
                     return WallType.Door;
                 case RoomType.Stairs:
-                    if (currentRoom.HasDoor() && currentRoom.HasDoorsInAdjacentRooms()) return WallType.Wall;
+                    if (currentRoom.HasDoor() || currentRoom.HasDoorsInAdjacentRooms()) return WallType.Wall;
                     return WallType.Door;
                 case RoomType.Empty:
-                    if (currentRoom.HasDoor() && currentRoom.HasDoorsInAdjacentRooms()) return WallType.Wall;
+                    if (currentRoom.HasDoor() || currentRoom.HasDoorsInAdjacentRooms()) return WallType.Wall;
                     return WallType.Door;
+                case RoomType.Basement:
+                    return WallType.Wall;
                 default:
                     return WallType.Wall;
             }
@@ -425,15 +456,15 @@ namespace CannibalisticZombies.ProceduralGeneration
 
         ///-////////////////////////////////////////////////////////////////////
         ///
-        public WallType DetermineHallwayWallType(RoomNode argCurrentRoom, RoomNode adjacentRoom)
+        public WallType DetermineHallwayWallType(RoomNode currentRoom, RoomNode adjacentRoom)
         {
             switch (adjacentRoom.roomType)
             {
                 case RoomType.Bedroom:
-                    if (adjacentRoom.HasDoor() && adjacentRoom.HasDoorsInAdjacentRooms()) return WallType.Wall;
+                    if (adjacentRoom.HasDoor() || adjacentRoom.HasDoorsInAdjacentRooms()) return WallType.Wall;
                     return WallType.Door;
                 case RoomType.Bathroom:
-                    if (adjacentRoom.HasDoor() && adjacentRoom.HasDoorsInAdjacentRooms()) return WallType.Wall;
+                    if (adjacentRoom.HasDoor() || adjacentRoom.HasDoorsInAdjacentRooms()) return WallType.Wall;
                     return WallType.Door;
                 case RoomType.Kitchen:
                     return WallType.Empty;
@@ -442,7 +473,7 @@ namespace CannibalisticZombies.ProceduralGeneration
                 case RoomType.LivingRoom:
                     return WallType.Empty;
                 case RoomType.Office:
-                    if (adjacentRoom.HasDoor() && adjacentRoom.HasDoorsInAdjacentRooms()) return WallType.Wall;
+                    if (adjacentRoom.HasDoor() || adjacentRoom.HasDoorsInAdjacentRooms()) return WallType.Wall;
                     return WallType.Door;
                 case RoomType.Hallway:
                     return WallType.Empty;
@@ -450,6 +481,9 @@ namespace CannibalisticZombies.ProceduralGeneration
                     return WallType.Door;
                 case RoomType.Empty:
                     return WallType.Door;
+                case RoomType.Basement:
+                    if (adjacentRoom.HasSecondaryDoor()) return WallType.Wall;
+                    return WallType.SecondaryDoor;
                 default:
                     return WallType.Wall;
             }
@@ -457,16 +491,27 @@ namespace CannibalisticZombies.ProceduralGeneration
 
         ///-////////////////////////////////////////////////////////////////////
         ///
-        public WallType DetermineStairsWallType(RoomNode argCurrentRoom, RoomNode adjacentRoom)
+        public WallType DetermineStairsWallType(RoomNode currentRoom, RoomNode adjacentRoom)
         {
             return WallType.Door;
         }
 
         ///-////////////////////////////////////////////////////////////////////
         ///
-        public WallType DetermineEmptyWallType(RoomNode argCurrentRoom, RoomNode adjacentRoom)
+        public WallType DetermineEmptyWallType(RoomNode currentRoom, RoomNode adjacentRoom)
         {
             return WallType.Door;
+        }
+
+        ///-////////////////////////////////////////////////////////////////////
+        ///
+        public WallType DetermineBasementWallType(RoomNode currentRoom, RoomNode adjacentRoom)
+        {
+            if (currentRoom.HasSecondaryDoor())
+            {
+                return WallType.Wall;
+            }
+            return WallType.SecondaryDoor;
         }
 
         #endregion // Determine Wall Type

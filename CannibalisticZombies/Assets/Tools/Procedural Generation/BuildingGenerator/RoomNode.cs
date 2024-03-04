@@ -6,6 +6,17 @@ namespace CannibalisticZombies.ProceduralGeneration
 {
     ///-////////////////////////////////////////////////////////////////////
     ///
+    public enum Direction
+    {
+        None = 0,
+        North = 1,
+        South = -1,
+        East = 2,
+        West = -2
+    }
+
+    ///-////////////////////////////////////////////////////////////////////
+    ///
     public enum WallType
     {
         Wall,
@@ -31,7 +42,8 @@ namespace CannibalisticZombies.ProceduralGeneration
         Garage = 7,
         Stairs = 8,
         Basement = 9,
-        Empty = 10
+        Empty = 10,
+        Boundary = 11
     }
 
     ///-////////////////////////////////////////////////////////////////////
@@ -51,6 +63,29 @@ namespace CannibalisticZombies.ProceduralGeneration
         {
             roomType = argRoomType;
             adjacentRooms = new Dictionary<RoomNode, WallType>();
+        }
+
+        ///-////////////////////////////////////////////////////////////////////
+        ///
+        public RoomNode(Direction argDirection, RoomNode adjacentRoom)
+        {
+            roomType = RoomType.Boundary;
+            adjacentRooms = new Dictionary<RoomNode, WallType>();
+            switch (argDirection)
+            {
+                case Direction.North:
+                    floorPos = new Vector2Int(adjacentRoom.floorPos.x, adjacentRoom.floorPos.y + 1);
+                    break;
+                case Direction.South:
+                    floorPos = new Vector2Int(adjacentRoom.floorPos.x, adjacentRoom.floorPos.y - 1);
+                    break;
+                case Direction.East:
+                    floorPos = new Vector2Int(adjacentRoom.floorPos.x + 1, adjacentRoom.floorPos.y);
+                    break;
+                case Direction.West:
+                    floorPos = new Vector2Int(adjacentRoom.floorPos.x - 1, adjacentRoom.floorPos.y);
+                    break;
+            }
         }
 
         ///-////////////////////////////////////////////////////////////////////
@@ -84,6 +119,32 @@ namespace CannibalisticZombies.ProceduralGeneration
 
         ///-////////////////////////////////////////////////////////////////////
         ///
+        public Direction GetAdjacentRoomDirection(RoomNode room)
+        {
+            int xDirection = room.floorPos.x - floorPos.x;
+            int yDirection = room.floorPos.y - floorPos.y;
+
+            if (xDirection > 0)
+            {
+                return Direction.East;
+            }
+            else if (xDirection < 0)
+            {
+                return Direction.West;
+            }
+            else if (yDirection > 0)
+            {
+                return Direction.North;
+            }
+            else if (yDirection < 0)
+            {
+                return Direction.South;
+            }
+            return Direction.None;
+        }
+
+        ///-////////////////////////////////////////////////////////////////////
+        ///
         public WallType GetAdjacentRoomWallType(RoomNode room)
         {
             return adjacentRooms[room];
@@ -93,6 +154,7 @@ namespace CannibalisticZombies.ProceduralGeneration
         ///
         public void SetAdjacentRoom(RoomNode argRoom, WallType argWallType)
         {
+            if (argRoom == null) return;
             if (adjacentRooms.ContainsKey(argRoom))
             {
                 adjacentRooms[argRoom] = argWallType;
@@ -112,7 +174,7 @@ namespace CannibalisticZombies.ProceduralGeneration
             {
                 if (adjacentRooms[room] == WallType.Door) doorCount++;
             }
-            return adjacentRooms.Count > 0;
+            return doorCount > 0;
         }
 
         ///-////////////////////////////////////////////////////////////////////
@@ -156,12 +218,64 @@ namespace CannibalisticZombies.ProceduralGeneration
         ///
         public bool NeedsConnection()
         {
-            if ((roomType == RoomType.Bedroom && HasDoor() == false) ||
-                (HasDoor() == false && HasSecondaryDoor() == false))
+            Debug.Log(HasDoor() + " " + HasDoorsInAdjacentRooms());
+            return HasDoor() == false && HasDoorsInAdjacentRooms() == false;
+        }
+
+        ///-////////////////////////////////////////////////////////////////////
+        ///
+        public int GetVerticesCount()
+        {
+            int vertCount = 0;
+            foreach (WallType wallType in adjacentRooms.Values)
             {
-                return true;
+                switch (wallType)
+                {
+                    case WallType.Wall:
+                        vertCount += 4;
+                        break;
+                    case WallType.Door:
+                        vertCount += 9;
+                        break;
+                    case WallType.SecondaryDoor:
+                        vertCount += 9;
+                        break;
+                    case WallType.Empty:
+                        break;
+                    case WallType.Entrance:
+                        vertCount += 9;
+                        break;
+                }
             }
-            return false;
+            return vertCount;
+        }
+
+        ///-////////////////////////////////////////////////////////////////////
+        ///
+        public int GetTrianglesCount()
+        {
+            int triangleCount = 0;
+            foreach (WallType wallType in adjacentRooms.Values)
+            {
+                switch (wallType)
+                {
+                    case WallType.Wall:
+                        triangleCount += 2;
+                        break;
+                    case WallType.Door:
+                        triangleCount += 7;
+                        break;
+                    case WallType.SecondaryDoor:
+                        triangleCount += 7;
+                        break;
+                    case WallType.Empty:
+                        break;
+                    case WallType.Entrance:
+                        triangleCount += 7;
+                        break;
+                }
+            }
+            return triangleCount;
         }
     }
 }

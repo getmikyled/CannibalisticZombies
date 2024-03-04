@@ -21,6 +21,17 @@ namespace CannibalisticZombies.ProceduralGeneration
 
         ///-////////////////////////////////////////////////////////////////////
         ///
+        public static Vector3[] Rotate(this Vector3[] vertices, Quaternion rotation, Vector3 center)
+        {
+            for (int i = 0; i < vertices.Length; i++)
+            {
+                vertices[i] = rotation * (vertices[i] - center) + center;
+            }
+            return vertices;
+        }
+
+        ///-////////////////////////////////////////////////////////////////////
+        ///
         public static void Shuffle<T>(this T[] list, int startingIndex = 1)
         {
             for (int i = startingIndex; i < list.Length; i++)
