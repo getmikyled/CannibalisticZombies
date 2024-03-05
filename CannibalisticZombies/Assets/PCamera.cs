@@ -10,23 +10,25 @@ namespace CannibalisticZombies
     /// 
     public class PCamera : MonoBehaviour
     {
-        public float sensX;
-        public float sensY;
-        [SerializeField] Transform cameraPos;
-        public Transform orientation;
+        [SerializeField] private float sensX;
+        [SerializeField] private float sensY;
+        [SerializeField] private Transform cameraPos;
+        [SerializeField] private Transform orientation;
 
-        float xRotation;
-        float yRotation;
+        private float xRotation;
+        private float yRotation;
 
-        // Start is called before the first frame update
-        void Start()
+        ///-/////////////////////////////////////////////////////////////////////
+        ///
+        private void Start()
         {
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
         }
 
-        // Update is called once per frame
-        void Update()
+        ///-/////////////////////////////////////////////////////////////////////
+        ///
+        private void Update()
         {
             float mouseX = Input.GetAxisRaw("Mouse X") * Time.deltaTime * sensX;
             float mouseY = Input.GetAxisRaw("Mouse Y") * Time.deltaTime * sensY;
