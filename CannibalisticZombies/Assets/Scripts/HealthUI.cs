@@ -13,10 +13,10 @@ namespace CannibalisticZombies {
         // HealthUI displays current health.
         // Calling SetHealth() with new Damage amount update healthBar to that amount.
         [SerializeField] private Image healthBar;
+        [SerializeField] private float animationSpeed; //Rate at which damage bar fills/empties per frame
+        [SerializeField] private Color damageColor; //Color of bar when take damage (RED)
+        [SerializeField] private Color healColor; //Color of bar when heals/removes damage (GREEN)
         public float currentHealth; //unnecessary in implementation
-        public float animationSpeed; //Rate at which damage bar fills/empties per frame
-        public Color damageColor; //Color of bar when take damage (RED)
-        public Color healColor; //Color of bar when heals/removes damage (GREEN)
         private float fillTarget; //Decimal amount of damage bar to be filled
 
 
@@ -61,9 +61,9 @@ namespace CannibalisticZombies {
         }
 
         //-/////////////////////////////////////////////////////////////////////
-        //Frame change in Health UI fill Amount
-        //Based on animationSpeed
-        //Call in Update() to animate Health Bar
+        /// Frame change in Health UI fill Amount
+        /// Based on animationSpeed
+        /// Call in Update() to animate Health Bar
         private void UpdateHealth() {
             //When health bar is up to date
             if (healthBar.fillAmount == fillTarget) { return; }
@@ -74,13 +74,11 @@ namespace CannibalisticZombies {
                 healthBar.color = damageColor;
                 healthBar.fillAmount = fillTarget;
             }
-            
             //When player takes damage
             else if (healthBar.fillAmount < fillTarget) {
                 healthBar.color = damageColor;
                 healthBar.fillAmount += animationSpeed;
             }
-            
             //When player heals/removes damage
             else if (healthBar.fillAmount > fillTarget)
             {
