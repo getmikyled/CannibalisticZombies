@@ -10,19 +10,19 @@ namespace CannibalisticZombies
     /// 
     public class PlayerCharacterController : MonoBehaviour
     {
-        [SerializeField] float moveSpeed;
-        [SerializeField] float groundDrag;
+        [SerializeField] private float moveSpeed;
+        [SerializeField] private float groundDrag;
 
-        [SerializeField] Transform orientation;
+        [SerializeField] private Transform orientation;
 
         private float horizontalInput;
         private float verticalInput;
-
-        [SerializeField] float pHeight;
-        private bool grounded;
-        [SerializeField] LayerMask ground;
-
         private Vector3 moveDir;
+
+        [SerializeField] private float pHeight;
+        [SerializeField] private LayerMask ground;
+
+        private bool grounded;
 
         private Rigidbody rb;
 
