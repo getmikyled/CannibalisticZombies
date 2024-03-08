@@ -5,7 +5,7 @@ using UnityEngine;
 public class Inventory 
 {
     private List<InventorySlot> inventory;
-
+    private int maxWeight;
 
     public Inventory() 
     {
@@ -13,9 +13,12 @@ public class Inventory
     }
 
     //-/////////////////////////////////////////////////////////////////////
-    /// adds amount of new item to existing InventorySlot with said item 
+    /// adds amount of new item to existing InventorySlot with said item
+    /// if maxWeight allows
     public void AddItem(Item newItem, int amount = 1)
     {
+        // return if adding goes overweight
+        if (GetCurrentWeight()+newItem.weight * amount > maxWeight) { return; }
         foreach (InventorySlot slot in inventory) 
         {
             if (slot.GetItem() == newItem) 
@@ -38,4 +41,20 @@ public class Inventory
         }
         return weight;
     }
+
+
+    //-/////////////////////////////////////////////////////////////////////
+    /// removes amount (default 1) of an item from the inventory 
+    /// returns true if successful <summary>
+    /// returns false if unsuccesful (no change to inventory)
+    public bool RemoveItem(Item item, int amount = 1) 
+    {
+        foreach (InventorySlot slot in inventory) 
+        {
+            if (slot.GetItem() == item) { return slot.RemoveItem(amount); }
+        }
+        return false;
+    }
 }
+
+
