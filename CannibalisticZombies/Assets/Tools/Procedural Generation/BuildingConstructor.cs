@@ -31,6 +31,17 @@ namespace CannibalisticZombies.ProceduralGeneration
         private GameObject buildingObject;
 
         private Mesh floorMesh;
+        Vector3[] floorNormals = new Vector3[]
+            {
+                Vector3.up,
+                Vector3.up,
+                Vector3.up,
+                Vector3.up,
+                Vector3.down,
+                Vector3.down,
+                Vector3.down,
+                Vector3.down,
+            };
 
         private Vector3 centerPoint;
         private Vector3[] vertices;
@@ -74,7 +85,7 @@ namespace CannibalisticZombies.ProceduralGeneration
                     roomObject.AddComponent<MeshRenderer>().sharedMaterial = wallMaterial;
                     roomObject.AddComponent<MeshCollider>();
                     roomObject.transform.parent = floorObject.transform;
-                    roomObject.transform.localPosition = new Vector3(room.floorPos.x * (roomSize + wallThickness), roomHeight * i, room.floorPos.y * (roomSize + wallThickness));
+                    roomObject.transform.localPosition = new Vector3(room.floorPos.x * (roomSize + wallThickness), 0, room.floorPos.y * (roomSize + wallThickness));
                     centerPoint = roomObject.transform.localPosition;
 
                     vertices = new Vector3[room.GetVerticesCount()];
@@ -82,12 +93,16 @@ namespace CannibalisticZombies.ProceduralGeneration
                     vertIndex = 0;
                     triIndex = 0;
 
-                    GameObject roomFloorObject = new GameObject("Floor");
-                    roomFloorObject.transform.parent = roomObject.transform;
-                    roomFloorObject.transform.localPosition = Vector3.zero;
-                    roomFloorObject.AddComponent<MeshFilter>().sharedMesh = floorMesh;
-                    roomFloorObject.AddComponent<MeshRenderer>().sharedMaterial = floorMaterial;
-                    roomFloorObject.AddComponent<BoxCollider>();
+                    if (room.roomType != RoomType.Empty)
+                    {
+                        GameObject roomFloorObject = new GameObject("Floor");
+                        roomFloorObject.transform.parent = roomObject.transform;
+                        roomFloorObject.transform.localPosition = Vector3.zero;
+                        roomFloorObject.AddComponent<MeshFilter>().sharedMesh = floorMesh;
+                        roomFloorObject.AddComponent<MeshRenderer>().sharedMaterial = floorMaterial;
+                        roomFloorObject.AddComponent<BoxCollider>();
+                        roomFloorObject.layer = 10;              
+                    }
 
                     foreach (RoomNode adjacentRoom in room.adjacentRooms.Keys)
                     {
@@ -262,14 +277,17 @@ namespace CannibalisticZombies.ProceduralGeneration
                 new Vector3(-floorPosition, 0, -floorPosition),
                 new Vector3(-floorPosition, 0, floorPosition),
                 new Vector3(floorPosition, 0, floorPosition),
+                new Vector3(floorPosition, 0, -floorPosition),
+                new Vector3(-floorPosition, 0, -floorPosition),
+                new Vector3(-floorPosition, 0, floorPosition),
+                new Vector3(floorPosition, 0, floorPosition),
                 new Vector3(floorPosition, 0, -floorPosition)
             };
-            int[] floorTriangles = new int[] { 0, 1, 3, 1, 2, 3 };
+            int[] floorTriangles = new int[] { 0, 1, 3, 1, 2, 3, 7, 5, 4, 7, 6, 5 };
 
             floorMesh.vertices = floorVertices;
             floorMesh.triangles = floorTriangles;
-
-            floorMesh.RecalculateNormals();
+            floorMesh.normals = floorNormals;
         }
     }
 }
