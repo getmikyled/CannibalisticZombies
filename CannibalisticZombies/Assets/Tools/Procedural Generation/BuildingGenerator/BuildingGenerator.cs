@@ -4,6 +4,7 @@ using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
+using static UnityEditor.Recorder.OutputPath;
 
 namespace CannibalisticZombies.ProceduralGeneration
 {
@@ -128,28 +129,41 @@ namespace CannibalisticZombies.ProceduralGeneration
                     SetRoomWalls(Direction.East, room, eastRoom);
                     RoomNode westRoom = floor.GetAdjacentRoom(Direction.West, room.floorPos);
                     SetRoomWalls(Direction.West, room, westRoom);
+                }
 
-                    // FORCE DOOR
-                    if (room.NeedsConnection())
+                // Room connection error check
+                foreach (RoomNode room in floor.rooms)
+                {
+                    if (room.CheckForEntranceConnection() == false)
                     {
-                        if (northRoom != null)
-                        {
-                            SetConnectionBetweenRooms(WallType.SecondaryDoor, room, northRoom);
-                        }
-                        else if (southRoom != null)
+                        RoomNode northRoom = floor.GetAdjacentRoom(Direction.North, room.floorPos);
+                        RoomNode southRoom = floor.GetAdjacentRoom(Direction.South, room.floorPos);
+                        RoomNode eastRoom = floor.GetAdjacentRoom(Direction.East, room.floorPos);
+                        RoomNode westRoom = floor.GetAdjacentRoom(Direction.West, room.floorPos);
+
+                        if (southRoom != null)
                         {
                             SetConnectionBetweenRooms(WallType.SecondaryDoor, room, southRoom);
+                            Debug.Log("FIXED: " + room.roomType.ToString() + " SOUTH");
+                        }
+                        else if (northRoom != null)
+                        {
+                            SetConnectionBetweenRooms(WallType.SecondaryDoor, room, northRoom);
+                            Debug.Log("FIXED: " + room.roomType.ToString() + " NORTH");
                         }
                         else if (eastRoom != null)
                         {
                             SetConnectionBetweenRooms(WallType.SecondaryDoor, room, eastRoom);
+                            Debug.Log("FIXED: " + room.roomType.ToString() + " EAST");
                         }
                         else if (westRoom != null)
                         {
                             SetConnectionBetweenRooms(WallType.SecondaryDoor, room, westRoom);
+                            Debug.Log("FIXED: " + room.roomType.ToString() + " WEST");
                         }
                     }
                 }
+
             }
         }
 
@@ -161,13 +175,13 @@ namespace CannibalisticZombies.ProceduralGeneration
             if (adjacentRoom != null)
             {
                 SetConnectionBetweenRooms(wallType, currentRoom, adjacentRoom);
-                Debug.Log(currentRoom.roomType + " " + adjacentRoom.roomType + " " + wallType + " " + argDirection);
+                //Debug.Log(currentRoom.roomType + " " + adjacentRoom.roomType + " " + wallType + " " + argDirection);
             }
             else
             {
                 RoomNode newRoom = new RoomNode(argDirection, currentRoom);
                 SetConnectionBetweenRooms(wallType, currentRoom, newRoom);
-                Debug.Log(currentRoom.roomType + " " + newRoom.roomType + " " + wallType + " " + argDirection);
+                //Debug.Log(currentRoom.roomType + " " + newRoom.roomType + " " + wallType + " " + argDirection);
             }
         }
 
@@ -195,6 +209,7 @@ namespace CannibalisticZombies.ProceduralGeneration
             // If current room is root node and doesnt have the entrance set yet.
             if (currentRoom == rootNode && currentRoom.HasEntrance() == false && adjacentRoom == null)
             {
+                currentRoom.connectedToEntrance = true;
                 return WallType.Entrance;
             }
 

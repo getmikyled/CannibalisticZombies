@@ -55,6 +55,8 @@ namespace CannibalisticZombies.ProceduralGeneration
         public int floorNum { get; private set; }
         public Vector2Int floorPos { get; private set; }
 
+        public bool connectedToEntrance = false;
+
         public Dictionary<RoomNode, WallType> adjacentRooms { get; private set; }
 
         ///-////////////////////////////////////////////////////////////////////
@@ -187,6 +189,23 @@ namespace CannibalisticZombies.ProceduralGeneration
                 if (adjacentRooms[room] == WallType.SecondaryDoor) doorCount++;
             }
             return adjacentRooms.Count > 0;
+        }
+
+        ///-////////////////////////////////////////////////////////////////////
+        ///
+        public bool CheckForEntranceConnection()
+        {
+            if (connectedToEntrance) return true;
+
+            foreach (RoomNode room in adjacentRooms.Keys)
+            {
+                if (adjacentRooms[room] != WallType.Wall && room.connectedToEntrance)
+                {
+                    connectedToEntrance = true;
+                    return true;
+                }
+            }
+            return false;
         }
 
         ///-////////////////////////////////////////////////////////////////////
