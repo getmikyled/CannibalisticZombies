@@ -80,4 +80,11 @@ public class InventorySlot
         item = null;
         amount = 0;
     }
+
+    //-/////////////////////////////////////////////////////////////////////
+    /// returns true if no items in slot
+    public bool IsEmpty() 
+    {
+        return amount == 0;
+    }
 }

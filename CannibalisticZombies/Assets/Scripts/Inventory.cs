@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Inventory 
@@ -45,14 +46,26 @@ public class Inventory
 
     //-/////////////////////////////////////////////////////////////////////
     /// removes amount (default 1) of an item from the inventory 
-    /// returns true if successful <summary>
+    /// returns true if successful 
     /// returns false if unsuccesful (no change to inventory)
+    /// removes empty Slots if created
     public bool RemoveItem(Item item, int amount = 1) 
     {
-        foreach (InventorySlot slot in inventory) 
+        foreach (InventorySlot slot in inventory)   
         {
-            if (slot.GetItem() == item) { return slot.RemoveItem(amount); }
+            if (slot.GetItem() == item) // checks all slots for first instance with sought item
+            {
+                if (slot.RemoveItem(amount)) // attempts to remove item from slot
+                {
+                    if (slot.IsEmpty()) {inventory.Remove(slot);}
+                    
+                    return true;
+                }
+                // Debug.Log("Not enough " + item + " in inventory")
+                return false;
+            }
         }
+        // Debug.Log("No " + item + " in inventory")
         return false;
     }
 }
