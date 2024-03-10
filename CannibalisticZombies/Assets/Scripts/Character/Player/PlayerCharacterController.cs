@@ -98,7 +98,7 @@ namespace CannibalisticZombies
                 state = MovementState.walking;
                 moveSpeed = walkSpeed;
                 //                Debug.Log("Run Stop");
-                Debug.Log(rStart);
+          //      Debug.Log(rStart);
             }
             if ((!crun && rStop + sprintDelay < Time.time))
             {
@@ -108,7 +108,7 @@ namespace CannibalisticZombies
 
             StateHandler();
          //   Debug.Log(Time.time);
-                       Debug.Log(moveSpeed);
+       //                Debug.Log(moveSpeed);
 
 
         }
