@@ -30,6 +30,8 @@ namespace CannibalisticZombies.ProceduralGeneration
         BuildingGenerator building;
         private GameObject buildingObject;
 
+        bool finishedBuilding = false;
+
         private Mesh floorMesh;
         Vector3[] floorNormals = new Vector3[]
             {
@@ -120,6 +122,8 @@ namespace CannibalisticZombies.ProceduralGeneration
                     wallsMesh.RecalculateNormals();
                 }
             }
+
+            finishedBuilding = true;
         }
 
         ///-////////////////////////////////////////////////////////////////////
