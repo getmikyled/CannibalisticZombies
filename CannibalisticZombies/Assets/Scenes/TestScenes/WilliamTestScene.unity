@@ -789,7 +789,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1336070401}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f06d7c0357ac942f6b9b04e43db73e4a, type: 3}
+  m_Script: {fileID: 11500000, guid: 10290650eea574f08955033365d4e174, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   sensX: 400
@@ -1051,10 +1051,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 1818696225}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9acf20a762ed84841b6ccb892e31b4fa, type: 3}
+  m_Script: {fileID: 11500000, guid: 1bcbfd666b75d4551847c5e05ebb7263, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 7
+  walkSpeed: 7
+  sprintSpeed: 10
+  sprintStamina: 3
+  sprintDelay: 2
+  crouchSpeed: 5
   groundDrag: 5
   orientation: {fileID: 676018185}
   pHeight: 2
