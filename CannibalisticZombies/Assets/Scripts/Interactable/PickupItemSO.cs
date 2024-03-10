@@ -23,13 +23,15 @@ namespace CannibalisticZombies
     public class PickupItemSO : ScriptableObject
     {
         /// A refrence to the enum above, so that each pickable item is restricted to the three options above
-        public ItemType ItemType; 
+        public ItemType itemType; 
         /// name of the item
-        public string ItemName;
+        public string itemName;
         /// the description for the item
-        public string ItemDescription;
+        public string itemDescription;
         /// max number of copies we can hold of the item
         public int maxCount;
+        /// max number of copies we can hold of the item
+        public float weight;
         /// duration of the cooldown if it has one
         public float useCoolDownDuration;
     }
