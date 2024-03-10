@@ -83,7 +83,10 @@ namespace CannibalisticZombies.ProceduralGeneration
                     Mesh wallsMesh = new Mesh();
                     roomObject.AddComponent<MeshFilter>().sharedMesh = wallsMesh;
                     roomObject.AddComponent<MeshRenderer>().sharedMaterial = wallMaterial;
-                    roomObject.AddComponent<MeshCollider>();
+                    MeshCollider collider = roomObject.AddComponent<MeshCollider>();
+                    collider.convex = false;
+                    collider.sharedMesh = wallsMesh;
+                    collider.enabled = true;
                     roomObject.transform.parent = floorObject.transform;
                     roomObject.transform.localPosition = new Vector3(room.floorPos.x * (roomSize + wallThickness), 0, room.floorPos.y * (roomSize + wallThickness));
                     centerPoint = roomObject.transform.localPosition;
@@ -100,7 +103,9 @@ namespace CannibalisticZombies.ProceduralGeneration
                         roomFloorObject.transform.localPosition = Vector3.zero;
                         roomFloorObject.AddComponent<MeshFilter>().sharedMesh = floorMesh;
                         roomFloorObject.AddComponent<MeshRenderer>().sharedMaterial = floorMaterial;
-                        roomFloorObject.AddComponent<BoxCollider>();
+                        BoxCollider floorCollider = roomFloorObject.AddComponent<BoxCollider>();
+                        floorCollider.enabled = true;
+
                         roomFloorObject.layer = 10;              
                     }
 
