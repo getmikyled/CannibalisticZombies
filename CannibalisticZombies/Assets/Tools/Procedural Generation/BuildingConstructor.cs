@@ -27,6 +27,17 @@ namespace CannibalisticZombies.ProceduralGeneration
         [SerializeField] private Material wallMaterial;
         [SerializeField] private Material floorMaterial;
 
+        [Space]
+        [SerializeField] private SO_RoomType bedroomPreset;
+        [SerializeField] private SO_RoomType bathroomPreset;
+        [SerializeField] private SO_RoomType kitchenPreset;
+        [SerializeField] private SO_RoomType diningRoomPreset;
+        [SerializeField] private SO_RoomType livingRoomPreset;
+        [SerializeField] private SO_RoomType officePreset;
+        [SerializeField] private SO_RoomType hallwayPreset;
+        [SerializeField] private SO_RoomType stairwayPreset;
+        [SerializeField] private SO_RoomType basementPreset;
+
         BuildingGenerator building;
         private GameObject buildingObject;
 
