@@ -34,6 +34,17 @@ namespace CannibalisticZombies
         public float weight;
         /// duration of the cooldown if it has one
         public float useCoolDownDuration;
+
+        public override bool Equals(object other)
+        {
+            PickupItemSO item = (PickupItemSO) other;
+            return itemName.Equals(item.itemName);
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
     }
 
 }
