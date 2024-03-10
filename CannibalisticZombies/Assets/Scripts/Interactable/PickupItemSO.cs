@@ -29,8 +29,6 @@ namespace CannibalisticZombies
         /// the description for the item
         public string itemDescription;
         /// max number of copies we can hold of the item
-        public int maxCount;
-        /// max number of copies we can hold of the item
         public float weight;
         /// duration of the cooldown if it has one
         public float useCoolDownDuration;
