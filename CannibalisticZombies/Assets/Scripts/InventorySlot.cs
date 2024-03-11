@@ -4,27 +4,30 @@ using System.ComponentModel;
 using UnityEngine;
 
 
-public class Item // Placeholder until Item class implemented
+public class PickupItemSO: ScriptableObject // Placeholder until PickupItemSO class implemented
 {
-    public int weight;
-} 
+    public string itemName;
+    public string itemDescription;
+    public float weight;
+    public float useCoolDownDuration;
+}
 public class InventorySlot
 {
 
-    private Item item; 
+    private PickupItemSO item; 
     private int amount; // Amount of the item stored
 
     //-/////////////////////////////////////////////////////////////////////
     /// Constructor
-    public InventorySlot(Item newItem, int startAmount = 1)
+    public InventorySlot(PickupItemSO newPickupItemSO, int startAmount = 1)
     {
-        item = newItem;
+        item = newPickupItemSO;
         amount = startAmount;
     }
 
     //-/////////////////////////////////////////////////////////////////////
     /// return item
-    public Item GetItem()
+    public PickupItemSO GetPickupItemSO()
     {
         return item;
     }
@@ -59,7 +62,10 @@ public class InventorySlot
         if (amount <=removedAmount) 
         {
             amount -= removedAmount;
-            if (amount == 0) { Reset(); }
+            if (amount == 0) 
+            {
+                Reset(); 
+            }
             return true;
         }
         //Debug.Log("Less than " + removedAmount + item + " available (" + amount + ")");
@@ -68,7 +74,7 @@ public class InventorySlot
 
     //-/////////////////////////////////////////////////////////////////////
     /// Returns weight of slot based on item weight
-    public int GetWeight()
+    public float GetWeight()
     {
         return amount * item.weight;
     }

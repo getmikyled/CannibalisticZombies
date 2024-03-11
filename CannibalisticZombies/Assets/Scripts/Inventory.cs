@@ -2,72 +2,103 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Events;
 
-public class Inventory 
+public class Inventory: MonoBehaviour 
 {
-    private List<InventorySlot> inventory;
-    private int maxWeight;
+    public Dictionary<string, InventorySlot> inventory;
+    private float maxWeight;
+    private float currentWeight;
+    public UnityEvent onWeightUpdated;
 
-    public Inventory() 
+    public Inventory(float startWeight = 0f, float startMaxWeight = 100f) 
     {
-        inventory = new List<InventorySlot>();
+        maxWeight = startMaxWeight;
+        SetCurrentWeight(startWeight);
+        inventory = new Dictionary<string, InventorySlot>();
+        if (onWeightUpdated != null)
+        {
+            onWeightUpdated = new UnityEvent();
+        }
+        
     }
 
     //-/////////////////////////////////////////////////////////////////////
     /// adds amount of new item to existing InventorySlot with said item
     /// if maxWeight allows
-    public void AddItem(Item newItem, int amount = 1)
+    public bool AddItem(PickupItemSO newItem, int amount = 1)
     {
-        // return if adding goes overweight
-        if (GetCurrentWeight()+newItem.weight * amount > maxWeight) { return; }
-        foreach (InventorySlot slot in inventory) 
+        // return false if adding goes overweight
+        if (GetCurrentWeight() + newItem.weight * amount > maxWeight)  return false;
+        // increases amount on existing item slot if possible
+        if (inventory.ContainsKey(newItem.itemName)) 
         {
-            if (slot.GetItem() == newItem) 
-            {
-                slot.AddItem(amount);
-                return;
-            }
+            string key = newItem.itemName;
+            inventory[key].AddItem(amount);
         }
-        inventory.Add(new InventorySlot(newItem, amount));
-    }
+        // otherwise creates a new slot with item and amount
+        else
+        {
+            inventory.Add(newItem.itemName, new InventorySlot(newItem, amount));
 
-    //-/////////////////////////////////////////////////////////////////////
-    /// returns weight of all inventory slots
-    public int GetCurrentWeight() 
-    {
-        int weight = 0;
-        foreach (InventorySlot slot in inventory) 
-        {
-            weight += slot.GetWeight();
         }
-        return weight;
+        UpdateCurrentWeight(amount * newItem.weight);
+        return true;
     }
 
 
     //-/////////////////////////////////////////////////////////////////////
-    /// removes amount (default 1) of an item from the inventory 
-    /// returns true if successful 
-    /// returns false if unsuccesful (no change to inventory)
-    /// removes empty Slots if created
-    public bool RemoveItem(Item item, int amount = 1) 
+    /// Removes amount of item from slot if possible <summary>
+    /// if no or not enough items available, returns false
+    /// otherwise returns true
+    public bool RemoveItem(PickupItemSO item, int amount = 1) 
     {
-        foreach (InventorySlot slot in inventory)   
+        // attempt to remove item and amount from slot
+        if (inventory.ContainsKey(item.itemName) && inventory[item.itemName].RemoveItem(amount))
         {
-            if (slot.GetItem() == item) // checks all slots for first instance with sought item
+            UpdateCurrentWeight( - item.weight * amount);
+            if (inventory[item.itemName].IsEmpty()) 
             {
-                if (slot.RemoveItem(amount)) // attempts to remove item from slot
-                {
-                    if (slot.IsEmpty()) {inventory.Remove(slot);}
-                    
-                    return true;
-                }
-                // Debug.Log("Not enough " + item + " in inventory")
-                return false;
+                inventory.Remove(item.itemName);
             }
+            return true;
         }
-        // Debug.Log("No " + item + " in inventory")
         return false;
     }
+
+    //-/////////////////////////////////////////////////////////////////////
+    /// returns currentWeight, updated with every inventory change
+    public float GetCurrentWeight()
+    {
+        return currentWeight;
+    }
+
+    //-/////////////////////////////////////////////////////////////////////
+    private void SetCurrentWeight(float newWeight) 
+    {
+        currentWeight = newWeight;
+        onWeightUpdated.Invoke();
+    }
+
+    //-/////////////////////////////////////////////////////////////////////
+    private void UpdateCurrentWeight(float weightDiff)
+    {
+        currentWeight += weightDiff;
+        onWeightUpdated.Invoke();
+    }
+
+    //-/////////////////////////////////////////////////////////////////////
+    public float GetMaxWeight() 
+    { 
+        return maxWeight; 
+    }
+
+    //-/////////////////////////////////////////////////////////////////////
+    public void SetMaxWeight(float newMaxWeight) 
+    { 
+        maxWeight = newMaxWeight; 
+    }
 }
+
 
 
