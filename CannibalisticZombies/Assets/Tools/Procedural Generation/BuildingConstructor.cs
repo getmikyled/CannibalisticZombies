@@ -8,9 +8,6 @@ namespace CannibalisticZombies.ProceduralGeneration
     ///
     public class BuildingConstructor : MonoBehaviour
     {
-        private static int MIN_WIDTH = 2;
-        private static int MIN_HEIGHT = 2;
-
         [SerializeField] private Vector2Int widthRange;
         [SerializeField] private Vector2Int heightRange;
         [SerializeField] private Vector2Int floorRange;
@@ -28,15 +25,15 @@ namespace CannibalisticZombies.ProceduralGeneration
         [SerializeField] private Material floorMaterial;
 
         [Space]
-        [SerializeField] private SO_RoomType bedroomPreset;
-        [SerializeField] private SO_RoomType bathroomPreset;
-        [SerializeField] private SO_RoomType kitchenPreset;
-        [SerializeField] private SO_RoomType diningRoomPreset;
-        [SerializeField] private SO_RoomType livingRoomPreset;
-        [SerializeField] private SO_RoomType officePreset;
-        [SerializeField] private SO_RoomType hallwayPreset;
-        [SerializeField] private SO_RoomType stairwayPreset;
-        [SerializeField] private SO_RoomType basementPreset;
+        [SerializeField] private RoomTypeSO bedroomPreset;
+        [SerializeField] private RoomTypeSO bathroomPreset;
+        [SerializeField] private RoomTypeSO kitchenPreset;
+        [SerializeField] private RoomTypeSO diningRoomPreset;
+        [SerializeField] private RoomTypeSO livingRoomPreset;
+        [SerializeField] private RoomTypeSO officePreset;
+        [SerializeField] private RoomTypeSO hallwayPreset;
+        [SerializeField] private RoomTypeSO stairwayPreset;
+        [SerializeField] private RoomTypeSO basementPreset;
 
         BuildingGenerator building;
         private GameObject buildingObject;
@@ -109,6 +106,7 @@ namespace CannibalisticZombies.ProceduralGeneration
                     vertIndex = 0;
                     triIndex = 0;
 
+                    // Create the room's flooring
                     if (room.roomType != RoomType.Empty)
                     {
                         GameObject roomFloorObject = new GameObject("Floor");
@@ -122,6 +120,7 @@ namespace CannibalisticZombies.ProceduralGeneration
                         roomFloorObject.layer = 10;              
                     }
 
+                    // Create the room's walls
                     foreach (RoomNode adjacentRoom in room.adjacentRooms.Keys)
                     {
                         WallType wallType = room.adjacentRooms[adjacentRoom];
@@ -131,6 +130,16 @@ namespace CannibalisticZombies.ProceduralGeneration
                     wallsMesh.vertices = vertices;
                     wallsMesh.triangles = triangles;
                     wallsMesh.RecalculateNormals();
+
+                    // Create the room's furniture
+                    GameObject roomPreset = DetermineRoomPreset(room.roomType);
+                    if (roomPreset != null)
+                    {
+                        GameObject interiorObject = Instantiate(roomPreset);
+                        interiorObject.name = room.roomType + " Interior";
+                        interiorObject.transform.parent = roomObject.transform;
+                        interiorObject.transform.localPosition = Vector3.zero;
+                    }
                 }
             }
 
@@ -283,6 +292,45 @@ namespace CannibalisticZombies.ProceduralGeneration
 
             vertIndex += 4;
             triIndex += 6;
+        }
+
+        ///-////////////////////////////////////////////////////////////////////
+        ///
+        private GameObject DetermineRoomPreset(RoomType argRoomType)
+        {
+            switch(argRoomType) {
+                case RoomType.Bedroom:
+                    return DeterminePreset(bedroomPreset);
+                case RoomType.Bathroom:
+                    return DeterminePreset(bathroomPreset);
+                case RoomType.Kitchen:
+                    return DeterminePreset(kitchenPreset);
+                case RoomType.DiningRoom:
+                    return DeterminePreset(diningRoomPreset);
+                case RoomType.LivingRoom:
+                    return DeterminePreset(livingRoomPreset);
+                case RoomType.Hallway:
+                    return DeterminePreset(hallwayPreset);
+                case RoomType.Office:
+                    return DeterminePreset(officePreset);
+                case RoomType.Stairs:
+                    return DeterminePreset(stairwayPreset);
+                case RoomType.Basement:
+                    return DeterminePreset(basementPreset);
+                default:
+                    return null;
+            }
+        }
+
+        ///-////////////////////////////////////////////////////////////////////
+        ///
+        private GameObject DeterminePreset(RoomTypeSO argRoomTypeSO)
+        {
+            if (argRoomTypeSO.genericRoomPresets.Length > 0)
+            {
+                return argRoomTypeSO.genericRoomPresets[Random.Range(0, argRoomTypeSO.genericRoomPresets.Length)];
+            }
+            return null;
         }
 
         ///-////////////////////////////////////////////////////////////////////

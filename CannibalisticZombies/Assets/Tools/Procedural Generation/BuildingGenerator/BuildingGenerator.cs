@@ -8,6 +8,9 @@ namespace CannibalisticZombies.ProceduralGeneration
     ///
     public class BuildingGenerator
     {
+        private static int MIN_WIDTH = 2;
+        private static int MIN_HEIGHT = 2;
+
         // Building Properties
         private int gridWidth;
         private int gridHeight;
@@ -22,8 +25,8 @@ namespace CannibalisticZombies.ProceduralGeneration
         ///-///////////////////////////////////oot
         public BuildingGenerator(int argGridWidth, int argGridHeight, int argFloorCount)
         {
-            gridWidth = argGridWidth;
-            gridHeight = argGridHeight;
+            gridWidth = Mathf.Clamp(argGridWidth, MIN_WIDTH, argGridWidth);
+            gridHeight = Mathf.Clamp(argGridHeight, MIN_HEIGHT, argGridHeight);
             floors = new FloorNode[argFloorCount];
 
             roomCount = argFloorCount * gridWidth * gridHeight - (2 * argFloorCount - 1); // Accounts for placing stairs rooms
