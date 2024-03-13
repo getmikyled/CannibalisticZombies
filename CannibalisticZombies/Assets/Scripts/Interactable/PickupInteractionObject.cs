@@ -39,13 +39,14 @@ namespace CannibalisticZombies
         /// This method is overriden from the method in Interaction Object to have specific behavior regarding the UI that is presented
         /// https://docs.unity3d.com/2018.1/Documentation/ScriptReference/UI.Selectable.OnPointerEnter.html
         /// 
-        public override void OnPointerEnter(PointerEventData eventData)
+        public override GameObject OnPointerEnter()
         {
+            Debug.Log("Interacted");
             /// set what text should show up
             base.SetTextOfKeyBind("Press E to Pickup");
         
            /// set the UI to true and make it show up on screen
-            base.OnPointerEnter(eventData);
+            return base.OnPointerEnter();
         }
     }
 }
