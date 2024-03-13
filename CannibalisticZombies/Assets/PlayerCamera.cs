@@ -8,7 +8,7 @@ namespace CannibalisticZombies
     ///
     /// Camera Code
     /// 
-    public class PCamera : MonoBehaviour
+    public class PlayerCamera : MonoBehaviour
     {
         [SerializeField] private float sensX;
         [SerializeField] private float sensY;
