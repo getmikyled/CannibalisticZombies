@@ -84,7 +84,7 @@ namespace CannibalisticZombies.ProceduralGeneration
             {
                 GameObject floorObject = new GameObject("Floor_" + i);
                 floorObject.transform.parent = buildingObject.transform;
-                floorObject.transform.localPosition += new Vector3(0, i * 5, 0);
+                floorObject.transform.localPosition += new Vector3(0, i * roomHeight, 0);
 
                 foreach (RoomNode room in building.floors[i].rooms)
                 {
