@@ -96,11 +96,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 2329980306919312402}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9acf20a762ed84841b6ccb892e31b4fa, type: 3}
+  m_Script: {fileID: 11500000, guid: 1bcbfd666b75d4551847c5e05ebb7263, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 7
-  groundDrag: 5
+  walkSpeed: 1
+  sprintSpeed: 2
+  sprintStamina: 5
+  sprintDelay: 2
+  crouchSpeed: 0.5
+  groundDrag: 1
   orientation: {fileID: 8645916211020816960}
   pHeight: 2
   ground:
