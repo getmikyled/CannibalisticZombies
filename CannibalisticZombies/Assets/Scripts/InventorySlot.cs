@@ -4,13 +4,6 @@ using System.ComponentModel;
 using UnityEngine;
 
 
-public class PickupItemSO: ScriptableObject // Placeholder until PickupItemSO class implemented
-{
-    public string itemName;
-    public string itemDescription;
-    public float weight;
-    public float useCoolDownDuration;
-}
 public class InventorySlot
 {
 
