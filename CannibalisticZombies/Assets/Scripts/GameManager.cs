@@ -29,7 +29,7 @@ namespace CannibalisticZombies
         {
             isResetting = true;
 
-            PlayerCharacterController.instance.gameObject.SetActive(false);
+            //PlayerCharacterController.instance.gameObject.SetActive(false);
         }
 
         ///-/////////////////////////////////////////////////////////////////////
@@ -38,7 +38,7 @@ namespace CannibalisticZombies
         {
             isResetting = false;
 
-            PlayerCharacterController.instance.gameObject.SetActive(true);
+          //PlayerCharacterController.instance.gameObject.SetActive(true);
         }
     }
 }
