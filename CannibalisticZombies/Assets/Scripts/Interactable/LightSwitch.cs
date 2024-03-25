@@ -40,33 +40,23 @@ namespace CannibalisticZombies
                 /// else just make it off
                 lightOn = true;
             }
-            /// dont let the UI show up on screen once its interacted with
-             base.SetKeyBindUI(false);
         }
 
         //-/////////////////////////////////////////////////////////////////////
         ///
-        /// OnPointerEnter is a method in the UnityEngine UI
-        /// When the user hovers over an object, the ingame UI for keybinds is set to active
-        /// This method is overriden from the method in Interaction Object to have specific behavior regarding the UI that is presented
-        /// https://docs.unity3d.com/2018.1/Documentation/ScriptReference/UI.Selectable.OnPointerEnter.html
+        /// Get specific UiText for the lightSwitch Object
         /// 
-        public override GameObject OnPointerEnter()
+        public override string GetUiText()
         {
 
             /// if the door is open 
             if(lightOn)
             {
                 /// show a specific text to turn off light
-                base.SetTextOfKeyBind("Press E to turn off Light");
+                return "Press E to turn off Light";
             }
-            else
-            {
-                /// else just show UI to turn onLight
-                base.SetTextOfKeyBind("Press E to turn on Light");
-            }
-            /// set the UI to true and make it show up on screen
-            return base.OnPointerEnter();
+            /// else just show UI to turn onLight
+            return "Press E to turn on Light";
         }
 
 

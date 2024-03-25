@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 
 namespace CannibalisticZombies
@@ -22,8 +23,13 @@ namespace CannibalisticZombies
         /// this is the raycaster which is used to decide the radius of interaction and when the user interacts w something
         private PhysicsRaycaster raycaster;
 
-        /// ui that appears when hovering over an interactable object
-        private GameObject ui = null;
+        ///  This is a variable that is used to grab the canvas associated with the keyBind UI
+        [SerializeField] 
+        private GameObject keyBindUI;
+
+        ///  This is a variable that is used to grab the text associated with the keyBind UI
+        [SerializeField] 
+        private Text keyBindText;
 
         // refrence to playerInteractionController
         public static PlayerInteractionController instance;
@@ -94,21 +100,23 @@ namespace CannibalisticZombies
                         {
                             /// call the OnInteract method when the player presses E
                             interactableObject.OnInteract(); 
+                            /// set the ui to false
+                            keyBindUI.SetActive(false);
                             /// make sure only the first object is interacted with, the configuration of raycaster already does this but its good to have extra precautions
                             break; 
                         }
                         else
                         {
-                            /// call onPointer and return the ui
-                            ui = interactableObject.OnPointerEnter();
+                            /// get the Ui text set the Ui on screen
+                            keyBindText.text = interactableObject.GetUiText();
+                            keyBindUI.SetActive(true);
                         }
                     }
                 }
                 /// if not hovering then cancel
-                if (ui != null && !hovering)
+                if (keyBindUI != null && !hovering)
                 {
-                    ui.SetActive(false);
-                    ui = null;
+                    keyBindUI.SetActive(false);
                 }
         }
     }

@@ -24,8 +24,33 @@ namespace CannibalisticZombies
         [SerializeField] 
         private GameObject pivot;
 
+
+        ///  closedRotation that the door is placed
+        private Quaternion closedRotation;
+
+        /// when facing away from the door
+        private Quaternion openRotationAway;
+
+        /// when facing towards to the open
+        private Quaternion openRotationTowards;
+
         /// the rotation angle of the door
         private float rotateAngle = 90f; 
+
+        ///  the speed of the door closing/opening
+        [SerializeField]
+        private float doorSpeed = 50f;
+
+        ///  stored coroutine to avoid multiple coroutines running at once
+        private Coroutine storedCoroutine;
+
+
+        public void Start()
+        {
+            closedRotation = Quaternion.Euler(0f, 0f, 0f) * pivot.transform.localRotation;
+            openRotationAway =  Quaternion.Euler(0f, -90f, 0f) * pivot.transform.localRotation;
+            openRotationTowards =  Quaternion.Euler(0f, 90f, 0f) * pivot.transform.localRotation;
+        }
     
         //-/////////////////////////////////////////////////////////////////////
         ///
@@ -47,33 +72,23 @@ namespace CannibalisticZombies
                 /// else just make it open 
                 OpenDoor();
             }
-            /// dont let the UI show up on screen once its interacted with
-            base.SetKeyBindUI(false);
             
         }
 
         //-/////////////////////////////////////////////////////////////////////
         ///
-        /// OnPointerEnter is a method in the UnityEngine UI
-        /// When the user hovers over an object, the ingame UI for keybinds is set to active
-        /// This method is overriden from the method in Interaction Object to have specific behavior regarding the UI that is presented
-        /// https://docs.unity3d.com/2018.1/Documentation/ScriptReference/UI.Selectable.OnPointerEnter.html
+        /// Get specific UiText for the door Object
         /// 
-        public override GameObject OnPointerEnter()
+        public override string GetUiText()
         {
             /// if the door is open 
             if(doorOpen)
             {
                 /// show a specific text to close door
-                base.SetTextOfKeyBind("Press E to Close Door");
+                return "Press E to Close Door";
             }
-            else
-            {
-                /// else just show UI to open the door
-                base.SetTextOfKeyBind("Press E to Open Door");
-            }
-            /// set the UI to true and make it show up on screen
-            return base.OnPointerEnter();
+            /// else just show UI to open the door
+            return "Press E to Open Door";
         }
 
 
@@ -107,21 +122,23 @@ namespace CannibalisticZombies
         /// 
         private void OpenDoor()
         {
+            if(storedCoroutine!= null)
+            {
+                /// stop a coroutine if its currently happening
+                StopCoroutine(storedCoroutine);
+            }
             if(InFrontOfDoor())
             {
-                rotateAngle = 90f;
+                storedCoroutine = StartCoroutine(RotateDoor(openRotationTowards));
             }
             else
             {
-                rotateAngle = -90f;
+                storedCoroutine = StartCoroutine(RotateDoor(openRotationAway));
             }
 
-            /// combine angle of the door and the angle we want to rotate (openRotation)
-            Quaternion openRotation = Quaternion.Euler(0f, rotateAngle, 0f) * pivot.transform.localRotation;
+            /// door is open
             doorOpen = true;
-            /// use coroutine 
-            StartCoroutine(RotateDoor(openRotation));
-            
+         
         }
 
         //-/////////////////////////////////////////////////////////////////////
@@ -132,9 +149,12 @@ namespace CannibalisticZombies
         private void CloseDoor()
         {
             /// oppisote of the rotateAngle used to open the door
-            Quaternion closeRotation = Quaternion.Euler(0f, -rotateAngle, 0f) * pivot.transform.localRotation;
+            // Quaternion closeRotation = Quaternion.Euler(0f, -rotateAngle, 0f) * pivot.transform.localRotation;
             doorOpen = false;
-            StartCoroutine(RotateDoor(closeRotation));
+            /// stop the coroutine that is currently running (avoid spamming bugs)
+            StopCoroutine(storedCoroutine);
+            /// start a new coroutine
+            storedCoroutine =  StartCoroutine(RotateDoor(closedRotation));
             
         }
 
@@ -146,27 +166,32 @@ namespace CannibalisticZombies
         /// Slerp: https://docs.unity3d.com/ScriptReference/Quaternion.Slerp.html
         /// 
         /// 
-        private IEnumerator RotateDoor(Quaternion dirRotation)
+        private IEnumerator RotateDoor(Quaternion finalRotation)
         {
-            /// take one second to rotate the door 
-            float duration = 1f;
-            /// counter for while loop
-            float counter = 0f;
-
+            /// the starting rotation
             Quaternion startingRotation = pivot.transform.localRotation;
 
-            while(counter < duration)
+            /// calculate the total length of the journey
+            float totalLength = Quaternion.Angle(startingRotation, finalRotation);
+            
+            /// get the start time
+            float startTime = Time.time;
+
+            /// while the angle between the current location and finalrotation is not 0 -> keep rotating the door
+            while (Quaternion.Angle(pivot.transform.localRotation, finalRotation) > 0.001f)
             {
-                /// slowly rotate based on counter
-                pivot.transform.localRotation = Quaternion.Slerp(startingRotation, dirRotation, counter / duration);
-                /// increment
-                counter += Time.deltaTime;
+
+                /// calculate the fraction of the total which will be used for the interpolation factor of slerp
+                float fractionOfTotal  = ((Time.time - startTime) * doorSpeed) / totalLength;
+                
+                /// slerp the door to rotate it naturally
+                pivot.transform.localRotation = Quaternion.Slerp(startingRotation, finalRotation, fractionOfTotal);
+
                 yield return null;
             }
 
-            /// make sure the door ends up in expected rotation 
-            pivot.transform.localRotation = dirRotation;
- 
+            /// make sure that it rotates to the final expected rotation.
+            pivot.transform.localRotation = finalRotation;
         }
 
     }

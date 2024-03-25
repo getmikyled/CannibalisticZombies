@@ -306,6 +306,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3fbdce25725649f8ab897f3c1af1d7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  keyBindUI: {fileID: 272564394}
+  keyBindText: {fileID: 1520288849}
 --- !u!4 &183917240 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8645916211020816960, guid: 02dcd654962f9664a9dc9fd462c20f68,
@@ -538,9 +540,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b4990440fb8244d0acdb13cb185010f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  keyBindUI: {fileID: 272564394}
-  keyBindText: {fileID: 1520288849}
   pivot: {fileID: 1380997057}
+  doorSpeed: 50
 --- !u!1 &424594862
 GameObject:
   m_ObjectHideFlags: 0
@@ -659,8 +660,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec4034bc8c8024baa9d2af55ff0c907c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  keyBindUI: {fileID: 272564394}
-  keyBindText: {fileID: 1520288849}
 --- !u!1 &652502206
 GameObject:
   m_ObjectHideFlags: 0
@@ -779,8 +778,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b38a1c927dbc24d2fbe94c53b4eb105a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  keyBindUI: {fileID: 272564394}
-  keyBindText: {fileID: 1520288849}
 --- !u!1 &796926019
 GameObject:
   m_ObjectHideFlags: 0
