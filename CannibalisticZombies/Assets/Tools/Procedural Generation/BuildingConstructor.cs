@@ -16,6 +16,8 @@ namespace CannibalisticZombies.ProceduralGeneration
         [SerializeField] private float wallThickness = 0.5f;
 
         [Space]
+        [Header("Door Properties")]
+        [SerializeField] private float doorPosition = 0;
         [SerializeField] private float doorWidth = 1.5f;
         [SerializeField] private float doorHeight = 2f;
 
@@ -173,15 +175,16 @@ namespace CannibalisticZombies.ProceduralGeneration
         ///
         private void ConstructDoor(Direction argDirection, Mesh mesh)
         {
+            
             float roomWalLength = roomSize + wallThickness * 2;
 
             switch (argDirection)
             {
                 case Direction.North:
-                    vertices[vertIndex] = new Vector3(-doorWidth / 2, centerPoint.y, roomSize / 2);
-                    vertices[vertIndex + 1] = new Vector3(-doorWidth / 2, centerPoint.y + doorHeight, roomSize / 2);
-                    vertices[vertIndex + 2] = new Vector3(doorWidth / 2, centerPoint.y + doorHeight, roomSize / 2);
-                    vertices[vertIndex + 3] = new Vector3(doorWidth / 2, centerPoint.y, roomSize / 2);
+                    vertices[vertIndex] = new Vector3(doorPosition - roomSize / 2, centerPoint.y, roomSize / 2);
+                    vertices[vertIndex + 1] = new Vector3(doorPosition - roomSize / 2, centerPoint.y + doorHeight, roomSize / 2);
+                    vertices[vertIndex + 2] = new Vector3(doorPosition - roomSize / 2 + doorWidth, centerPoint.y + doorHeight, roomSize / 2);
+                    vertices[vertIndex + 3] = new Vector3(doorPosition - roomSize / 2 + doorWidth, centerPoint.y, roomSize / 2);
                     vertices[vertIndex + 4] = new Vector3(roomWalLength / 2, centerPoint.y, roomSize / 2);
                     vertices[vertIndex + 5] = new Vector3(roomWalLength / 2, centerPoint.y + roomHeight, roomSize / 2);
                     vertices[vertIndex + 6] = new Vector3(0, centerPoint.y + roomHeight, roomSize / 2);
@@ -189,10 +192,10 @@ namespace CannibalisticZombies.ProceduralGeneration
                     vertices[vertIndex + 8] = new Vector3(-roomWalLength / 2, centerPoint.y, roomSize / 2);
                     break;
                 case Direction.South:
-                    vertices[vertIndex] = new Vector3(doorWidth / 2, centerPoint.y, -roomSize / 2);
-                    vertices[vertIndex + 1] = new Vector3(doorWidth / 2, centerPoint.y + doorHeight, -roomSize / 2);
-                    vertices[vertIndex + 2] = new Vector3(-doorWidth / 2, centerPoint.y + doorHeight, -roomSize / 2);
-                    vertices[vertIndex + 3] = new Vector3(-doorWidth / 2, centerPoint.y, -roomSize / 2);
+                    vertices[vertIndex] = new Vector3(doorPosition - roomSize / 2 + doorWidth, centerPoint.y, -roomSize / 2);
+                    vertices[vertIndex + 1] = new Vector3(doorPosition - roomSize / 2 + doorWidth, centerPoint.y + doorHeight, -roomSize / 2);
+                    vertices[vertIndex + 2] = new Vector3(doorPosition - roomSize / 2, centerPoint.y + doorHeight, -roomSize / 2);
+                    vertices[vertIndex + 3] = new Vector3(doorPosition - roomSize / 2, centerPoint.y, -roomSize / 2);
                     vertices[vertIndex + 4] = new Vector3(-roomWalLength / 2, centerPoint.y, -roomSize / 2);
                     vertices[vertIndex + 5] = new Vector3(-roomWalLength / 2, centerPoint.y + roomHeight, -roomSize / 2);
                     vertices[vertIndex + 6] = new Vector3(0, centerPoint.y + roomHeight, -roomSize / 2);
@@ -200,10 +203,10 @@ namespace CannibalisticZombies.ProceduralGeneration
                     vertices[vertIndex + 8] = new Vector3(roomWalLength / 2, centerPoint.y, -roomSize / 2);
                     break;
                 case Direction.East:
-                    vertices[vertIndex] = new Vector3(roomSize / 2, centerPoint.y, doorWidth / 2);
-                    vertices[vertIndex + 1] = new Vector3(roomSize / 2, centerPoint.y + doorHeight, doorWidth / 2);
-                    vertices[vertIndex + 2] = new Vector3(roomSize / 2, centerPoint.y + doorHeight, -doorWidth / 2);
-                    vertices[vertIndex + 3] = new Vector3(roomSize / 2, centerPoint.y, -doorWidth / 2);
+                    vertices[vertIndex] = new Vector3(roomSize / 2, centerPoint.y, doorPosition - roomSize / 2 + doorWidth);
+                    vertices[vertIndex + 1] = new Vector3(roomSize / 2, centerPoint.y + doorHeight, doorPosition - roomSize / 2 + doorWidth);
+                    vertices[vertIndex + 2] = new Vector3(roomSize / 2, centerPoint.y + doorHeight, doorPosition - roomSize / 2);
+                    vertices[vertIndex + 3] = new Vector3(roomSize / 2, centerPoint.y, doorPosition - roomSize / 2);
                     vertices[vertIndex + 4] = new Vector3(roomSize / 2, centerPoint.y, -roomWalLength / 2);
                     vertices[vertIndex + 5] = new Vector3(roomSize / 2, centerPoint.y + roomHeight, -roomWalLength / 2);
                     vertices[vertIndex + 6] = new Vector3(roomSize / 2, centerPoint.y + roomHeight, 0);
@@ -211,10 +214,10 @@ namespace CannibalisticZombies.ProceduralGeneration
                     vertices[vertIndex + 8] = new Vector3(roomSize / 2, centerPoint.y, roomWalLength / 2);
                     break;
                 case Direction.West:
-                    vertices[vertIndex] = new Vector3(-roomSize / 2, centerPoint.y, -doorWidth / 2);
-                    vertices[vertIndex + 1] = new Vector3(-roomSize / 2, centerPoint.y + doorHeight, -doorWidth / 2);
-                    vertices[vertIndex + 2] = new Vector3(-roomSize / 2, centerPoint.y + doorHeight, doorWidth / 2);
-                    vertices[vertIndex + 3] = new Vector3(-roomSize / 2, centerPoint.y, doorWidth / 2);
+                    vertices[vertIndex] = new Vector3(-roomSize / 2, centerPoint.y, doorPosition - roomSize / 2);
+                    vertices[vertIndex + 1] = new Vector3(-roomSize / 2, centerPoint.y + doorHeight, doorPosition - roomSize / 2);
+                    vertices[vertIndex + 2] = new Vector3(-roomSize / 2, centerPoint.y + doorHeight, doorPosition - roomSize / 2 + doorWidth);
+                    vertices[vertIndex + 3] = new Vector3(-roomSize / 2, centerPoint.y, doorPosition - roomSize / 2 + doorWidth);
                     vertices[vertIndex + 4] = new Vector3(-roomSize / 2, centerPoint.y, roomWalLength / 2);
                     vertices[vertIndex + 5] = new Vector3(-roomSize / 2, centerPoint.y + roomHeight, roomWalLength / 2);
                     vertices[vertIndex + 6] = new Vector3(-roomSize / 2, centerPoint.y + roomHeight, 0);
