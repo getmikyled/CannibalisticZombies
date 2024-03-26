@@ -143,22 +143,18 @@ namespace CannibalisticZombies.ProceduralGeneration
                         if (southRoom != null)
                         {
                             SetConnectionBetweenRooms(WallType.SecondaryDoor, room, southRoom);
-                            Debug.Log("FIXED: " + room.roomType.ToString() + " SOUTH");
                         }
                         else if (northRoom != null)
                         {
                             SetConnectionBetweenRooms(WallType.SecondaryDoor, room, northRoom);
-                            Debug.Log("FIXED: " + room.roomType.ToString() + " NORTH");
                         }
                         else if (eastRoom != null)
                         {
                             SetConnectionBetweenRooms(WallType.SecondaryDoor, room, eastRoom);
-                            Debug.Log("FIXED: " + room.roomType.ToString() + " EAST");
                         }
                         else if (westRoom != null)
                         {
                             SetConnectionBetweenRooms(WallType.SecondaryDoor, room, westRoom);
-                            Debug.Log("FIXED: " + room.roomType.ToString() + " WEST");
                         }
                     }
                 }

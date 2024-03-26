@@ -15,7 +15,8 @@ MonoBehaviour:
   roomType: 1
   wallMaterial: {fileID: 2100000, guid: 5e23d3bf581797a4b86c280ce95790cc, type: 2}
   floorMaterial: {fileID: 2100000, guid: 51d3d1d257bc7974fa80c6c394ae5037, type: 2}
-  genericRoomPresets: []
+  genericRoomPresets:
+  - {fileID: 9199809911617666670, guid: 06c6e6d42294305449abfbbe55d6513b, type: 3}
   oneDoorRoomPresets: []
   threeDoorRoomPresets: []
   fourDoorRoomPresets: []

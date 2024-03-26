@@ -48,7 +48,7 @@ MonoBehaviour:
   heightRange: {x: 2, y: 5}
   floorRange: {x: 2, y: 3}
   roomSize: 10
-  roomHeight: 5
+  roomHeight: 5.5
   wallThickness: 1
   doorWidth: 2
   doorHeight: 3
