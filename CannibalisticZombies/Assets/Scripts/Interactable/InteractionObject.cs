@@ -33,7 +33,7 @@ namespace CannibalisticZombies
         ///
         /// get the specific UiText for the game object
         ///
-        public virtual string GetUiText()
+        public virtual string GetUIText()
         {
             return "";
         }

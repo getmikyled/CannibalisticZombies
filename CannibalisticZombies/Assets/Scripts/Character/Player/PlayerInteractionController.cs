@@ -108,7 +108,7 @@ namespace CannibalisticZombies
                         else
                         {
                             /// get the Ui text set the Ui on screen
-                            keyBindText.text = interactableObject.GetUiText();
+                            keyBindText.text = interactableObject.GetUIText();
                             keyBindUI.SetActive(true);
                         }
                     }

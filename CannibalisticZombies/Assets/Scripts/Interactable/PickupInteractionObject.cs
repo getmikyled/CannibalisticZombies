@@ -34,7 +34,7 @@ namespace CannibalisticZombies
         ///
         /// Get specific UiText for the pickup Interaction Object
         /// 
-        public override string GetUiText()
+        public override string GetUIText()
         {
             return "Press E to Pickup";
         }

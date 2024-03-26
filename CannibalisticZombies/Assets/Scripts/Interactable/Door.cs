@@ -42,7 +42,7 @@ namespace CannibalisticZombies
         private float doorSpeed = 50f;
 
         ///  stored coroutine to avoid multiple coroutines running at once
-        private Coroutine storedCoroutine;
+        private Coroutine storedRotateDoorCoroutine;
 
 
         public void Start()
@@ -79,7 +79,7 @@ namespace CannibalisticZombies
         ///
         /// Get specific UiText for the door Object
         /// 
-        public override string GetUiText()
+        public override string GetUIText()
         {
             /// if the door is open 
             if(doorOpen)
@@ -122,18 +122,18 @@ namespace CannibalisticZombies
         /// 
         private void OpenDoor()
         {
-            if(storedCoroutine!= null)
+            if(storedRotateDoorCoroutine!= null)
             {
                 /// stop a coroutine if its currently happening
-                StopCoroutine(storedCoroutine);
+                StopCoroutine(storedRotateDoorCoroutine);
             }
             if(InFrontOfDoor())
             {
-                storedCoroutine = StartCoroutine(RotateDoor(openRotationTowards));
+                storedRotateDoorCoroutine = StartCoroutine(RotateDoor(openRotationTowards));
             }
             else
             {
-                storedCoroutine = StartCoroutine(RotateDoor(openRotationAway));
+                storedRotateDoorCoroutine = StartCoroutine(RotateDoor(openRotationAway));
             }
 
             /// door is open
@@ -152,9 +152,9 @@ namespace CannibalisticZombies
             // Quaternion closeRotation = Quaternion.Euler(0f, -rotateAngle, 0f) * pivot.transform.localRotation;
             doorOpen = false;
             /// stop the coroutine that is currently running (avoid spamming bugs)
-            StopCoroutine(storedCoroutine);
+            StopCoroutine(storedRotateDoorCoroutine);
             /// start a new coroutine
-            storedCoroutine =  StartCoroutine(RotateDoor(closedRotation));
+            storedRotateDoorCoroutine =  StartCoroutine(RotateDoor(closedRotation));
             
         }
 

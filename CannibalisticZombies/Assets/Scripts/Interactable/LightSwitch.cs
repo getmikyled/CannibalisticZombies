@@ -46,7 +46,7 @@ namespace CannibalisticZombies
         ///
         /// Get specific UiText for the lightSwitch Object
         /// 
-        public override string GetUiText()
+        public override string GetUIText()
         {
 
             /// if the door is open 
