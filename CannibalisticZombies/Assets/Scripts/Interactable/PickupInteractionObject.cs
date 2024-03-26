@@ -28,24 +28,15 @@ namespace CannibalisticZombies
         {
             /// remove game Object from screen
             gameObject.SetActive(false);
-            /// dont let the UI show up on screen once its interacted with
-            base.SetKeyBindUI(false);
         }
 
         //-/////////////////////////////////////////////////////////////////////
         ///
-        /// OnPointerEnter is a method in the UnityEngine UI
-        /// When the user hovers over an object, the ingame UI for keybinds is set to active
-        /// This method is overriden from the method in Interaction Object to have specific behavior regarding the UI that is presented
-        /// https://docs.unity3d.com/2018.1/Documentation/ScriptReference/UI.Selectable.OnPointerEnter.html
+        /// Get specific UiText for the pickup Interaction Object
         /// 
-        public override void OnPointerEnter(PointerEventData eventData)
+        public override string GetUIText()
         {
-            /// set what text should show up
-            base.SetTextOfKeyBind("Press E to Pickup");
-        
-           /// set the UI to true and make it show up on screen
-            base.OnPointerEnter(eventData);
+            return "Press E to Pickup";
         }
     }
 }

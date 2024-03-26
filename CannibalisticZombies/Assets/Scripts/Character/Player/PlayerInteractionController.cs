@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 
 namespace CannibalisticZombies
@@ -22,6 +23,17 @@ namespace CannibalisticZombies
         /// this is the raycaster which is used to decide the radius of interaction and when the user interacts w something
         private PhysicsRaycaster raycaster;
 
+        ///  This is a variable that is used to grab the canvas associated with the keyBind UI
+        [SerializeField] 
+        private GameObject keyBindUI;
+
+        ///  This is a variable that is used to grab the text associated with the keyBind UI
+        [SerializeField] 
+        private Text keyBindText;
+
+        // refrence to playerInteractionController
+        public static PlayerInteractionController instance;
+
         //-/////////////////////////////////////////////////////////////////////
         ///
         /// Awake is called before the first frame update & intializes variables that dont rely on the script
@@ -33,6 +45,26 @@ namespace CannibalisticZombies
             
             /// intalize raycaster from the camera
             raycaster = playerCamera.GetComponent<PhysicsRaycaster>();
+
+            /// Create ref to playerInteractionController on Awake
+            if(instance != null && instance != this)
+            {
+                Destroy(instance);
+            }
+            else
+            {
+                instance = this;
+            }
+
+        }
+
+        //-/////////////////////////////////////////////////////////////////////
+        ///
+        /// Get access to player's position using this getter method.
+        ///
+        public Transform GetPlayerTransform()
+        {
+            return transform;
         }
 
         //-/////////////////////////////////////////////////////////////////////
@@ -41,9 +73,6 @@ namespace CannibalisticZombies
         ///
         private void Update()
         {
-            /// check when the E button is pressed
-            if (Input.GetKeyDown(KeyCode.E))
-            {
                 /// get the object from where the mouse is located
                 PointerEventData eventData = new PointerEventData(EventSystem.current);
                 /// make sure the location of that object is the mousePosition
@@ -56,22 +85,39 @@ namespace CannibalisticZombies
                 /// raycast is executed on scene and then  the evenData and then put into results
                 raycaster.Raycast(eventData, results);
 
+
+                bool hovering = false;
+
                 /// iterate through each result (should always be one based on how the raycaster component is configured)
                 foreach (RaycastResult result in results)
                 {
                     /// the raycast only captures objects in the interactable layer, so each result will have the Ineraction Object script.
                     InteractionObject interactableObject = result.gameObject.GetComponent<InteractionObject>();
-                    
-                    /// we dont need this line but its good to check anyways (check if the object actually exists)
                     if (interactableObject != null)
                     {
-                        /// call the OnInteract method when the player presses E
-                        interactableObject.OnInteract(); 
-                        /// make sure only the first object is interacted with, the configuration of raycaster already does this but its good to have extra precautions
-                        break; 
+                        hovering = true;
+                        if(Input.GetKeyDown(KeyCode.E))
+                        {
+                            /// call the OnInteract method when the player presses E
+                            interactableObject.OnInteract(); 
+                            /// set the ui to false
+                            keyBindUI.SetActive(false);
+                            /// make sure only the first object is interacted with, the configuration of raycaster already does this but its good to have extra precautions
+                            break; 
+                        }
+                        else
+                        {
+                            /// get the Ui text set the Ui on screen
+                            keyBindText.text = interactableObject.GetUIText();
+                            keyBindUI.SetActive(true);
+                        }
                     }
                 }
-            }
+                /// if not hovering then cancel
+                if (keyBindUI != null && !hovering)
+                {
+                    keyBindUI.SetActive(false);
+                }
         }
     }
 }

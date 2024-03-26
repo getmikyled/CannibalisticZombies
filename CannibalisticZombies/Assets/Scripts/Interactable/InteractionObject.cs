@@ -15,13 +15,8 @@ namespace CannibalisticZombies
     /// This InteractionObject helps with UI and interaction features for each object in the game
     /// The player will interact based on this input (E)
     /// 
-    public class InteractionObject : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+    public class InteractionObject : MonoBehaviour
     {
-        ///  This is a variable that is used to grab the canvas associated with the keyBind UI
-        [SerializeField] private GameObject keyBindUI;
-
-        ///  This is a variable that is used to grab the text associated with the keyBind UI
-        [SerializeField] private Text keyBindText;
 
         //-/////////////////////////////////////////////////////////////////////
         ///
@@ -36,49 +31,13 @@ namespace CannibalisticZombies
 
         //-/////////////////////////////////////////////////////////////////////
         ///
-        /// OnPointerEnter is a method in the UnityEngine UI
-        /// When the user hovers over an object, the ingame UI for keybinds is set to active
-        /// It is also virtual because child specific behavior is needed for specific objects
-        /// https://docs.unity3d.com/2018.1/Documentation/ScriptReference/UI.Selectable.OnPointerEnter.html
-        /// 
-        public virtual void OnPointerEnter(PointerEventData eventData)
+        /// get the specific UiText for the game object
+        ///
+        public virtual string GetUIText()
         {
-            /// show the UI on screen
-            keyBindUI.SetActive(true);
+            return "";
         }
-
-        //-/////////////////////////////////////////////////////////////////////
-        ///
-        /// OnPointerExit is a method in the UnityEngine UI
-        /// When the user is no longer hovering over an object, the ingame UI for keybinds is not set to active
-        /// https://docs.unity3d.com/2018.3/Documentation/ScriptReference/UI.Selectable.OnPointerExit.html
-        /// 
-        public void OnPointerExit(PointerEventData eventData)
-        {
-            /// dont show UI on screen
-            keyBindUI.SetActive(false);
-        }
-
-        //-/////////////////////////////////////////////////////////////////////
-        ///
-        /// SetTextofKeyBind sets the text of the UI to something different. This way
-        /// we can mantain the protection level of the Text for the keybind. 
-        /// We take in a string and change the KeyBindText
-        ///
-        public void SetTextOfKeyBind(string replace)
-        {
-            keyBindText.text = replace;
-        }
-
-        //-/////////////////////////////////////////////////////////////////////
-        ///
-        /// SetKeyBindUI sets the UI to active or not active. This way
-        /// we can mantain the protection level of the UI for the keybind. 
-        /// We take in a bool.
-        ///
-        public void SetKeyBindUI(bool active)
-        {
-            keyBindUI.SetActive(active);
-        }
+        
+        
     }
 }
