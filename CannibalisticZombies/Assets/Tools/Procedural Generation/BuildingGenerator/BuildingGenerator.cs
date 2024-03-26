@@ -8,6 +8,9 @@ namespace CannibalisticZombies.ProceduralGeneration
     ///
     public class BuildingGenerator
     {
+        private static int MIN_WIDTH = 2;
+        private static int MIN_HEIGHT = 2;
+
         // Building Properties
         private int gridWidth;
         private int gridHeight;
@@ -22,8 +25,8 @@ namespace CannibalisticZombies.ProceduralGeneration
         ///-///////////////////////////////////oot
         public BuildingGenerator(int argGridWidth, int argGridHeight, int argFloorCount)
         {
-            gridWidth = argGridWidth;
-            gridHeight = argGridHeight;
+            gridWidth = Mathf.Clamp(argGridWidth, MIN_WIDTH, argGridWidth);
+            gridHeight = Mathf.Clamp(argGridHeight, MIN_HEIGHT, argGridHeight);
             floors = new FloorNode[argFloorCount];
 
             roomCount = argFloorCount * gridWidth * gridHeight - (2 * argFloorCount - 1); // Accounts for placing stairs rooms
@@ -140,22 +143,18 @@ namespace CannibalisticZombies.ProceduralGeneration
                         if (southRoom != null)
                         {
                             SetConnectionBetweenRooms(WallType.SecondaryDoor, room, southRoom);
-                            Debug.Log("FIXED: " + room.roomType.ToString() + " SOUTH");
                         }
                         else if (northRoom != null)
                         {
                             SetConnectionBetweenRooms(WallType.SecondaryDoor, room, northRoom);
-                            Debug.Log("FIXED: " + room.roomType.ToString() + " NORTH");
                         }
                         else if (eastRoom != null)
                         {
                             SetConnectionBetweenRooms(WallType.SecondaryDoor, room, eastRoom);
-                            Debug.Log("FIXED: " + room.roomType.ToString() + " EAST");
                         }
                         else if (westRoom != null)
                         {
                             SetConnectionBetweenRooms(WallType.SecondaryDoor, room, westRoom);
-                            Debug.Log("FIXED: " + room.roomType.ToString() + " WEST");
                         }
                     }
                 }

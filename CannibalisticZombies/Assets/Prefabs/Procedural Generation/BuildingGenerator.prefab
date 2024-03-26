@@ -48,9 +48,18 @@ MonoBehaviour:
   heightRange: {x: 2, y: 5}
   floorRange: {x: 2, y: 3}
   roomSize: 10
-  roomHeight: 5
+  roomHeight: 5.5
   wallThickness: 1
   doorWidth: 2
   doorHeight: 3
   wallMaterial: {fileID: 2100000, guid: 5e23d3bf581797a4b86c280ce95790cc, type: 2}
   floorMaterial: {fileID: 2100000, guid: 51d3d1d257bc7974fa80c6c394ae5037, type: 2}
+  bedroomPreset: {fileID: 11400000, guid: d8489039dfb327746b9997c0af9c8922, type: 2}
+  bathroomPreset: {fileID: 11400000, guid: 433ddef12db9c774a9a2d70ccc7e02c3, type: 2}
+  kitchenPreset: {fileID: 11400000, guid: 35bd010fadf62274eb0fc72b003a2289, type: 2}
+  diningRoomPreset: {fileID: 11400000, guid: 0920ab6ea1fed2e4f9ada3a499c76d83, type: 2}
+  livingRoomPreset: {fileID: 11400000, guid: eba5fc0477ede3248a7db03bf4382de1, type: 2}
+  officePreset: {fileID: 11400000, guid: 193a4aeb4630f3c41bf02634540f60bb, type: 2}
+  hallwayPreset: {fileID: 11400000, guid: 8622487c9536aec4583f758f3c2d09b5, type: 2}
+  stairwayPreset: {fileID: 11400000, guid: 921f9d904e925684ba7b70bdcd2d049a, type: 2}
+  basementPreset: {fileID: 11400000, guid: d6fe38c486453114390ae9cac4f892b1, type: 2}
