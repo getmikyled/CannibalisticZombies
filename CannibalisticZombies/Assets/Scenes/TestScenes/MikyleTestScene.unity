@@ -429,6 +429,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: DefaultStairway
       objectReference: {fileID: 0}
+    - target: {fileID: 956949256843999958, guid: 98e0c980d794d8740bb4f63ead06988d,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7096453425174445095, guid: 98e0c980d794d8740bb4f63ead06988d,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -650,6 +655,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 352532819631641416, guid: 77e28442ad6caaa44a05b367aa058880,
+        type: 3}
+      propertyPath: doorPosition
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 2857382079113917924, guid: 77e28442ad6caaa44a05b367aa058880,
         type: 3}
       propertyPath: m_LocalPosition.x
