@@ -12,6 +12,7 @@ namespace CannibalisticZombies
         private float maxWeight;
         private float currentWeight;
         public UnityEvent onWeightUpdated;
+        public UnityEvent<string> onSlotUpdated;
 
         public Inventory(float startWeight = 0f, float startMaxWeight = 100f)
         {
@@ -45,6 +46,7 @@ namespace CannibalisticZombies
 
             }
             UpdateCurrentWeight(amount * newItem.weight);
+            onSlotUpdated.Invoke(newItem.itemName);
             return true;
         }
 
@@ -63,6 +65,7 @@ namespace CannibalisticZombies
                 {
                     inventory.Remove(item.itemName);
                 }
+                onSlotUpdated.Invoke(item.itemName);
                 return true;
             }
             return false;
