@@ -50,6 +50,7 @@ MonoBehaviour:
   roomSize: 10
   roomHeight: 5.5
   wallThickness: 1
+  doorPosition: 2
   doorWidth: 2
   doorHeight: 3
   wallMaterial: {fileID: 2100000, guid: 5e23d3bf581797a4b86c280ce95790cc, type: 2}
