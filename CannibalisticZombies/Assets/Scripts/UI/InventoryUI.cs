@@ -9,15 +9,16 @@ namespace CannibalisticZombies
     {
         public Inventory inventory;
         public TextMeshProUGUI inventoryText;
-
+        public TextMeshProUGUI weightText;
         // number of characters per line
         public static int LINELENGTH = 40;
 
         // title of Inventory
-        public string initialText = "Inventory\n";
+        public string initialText = "";
         // Start is called before the first frame update
         void Start()
         {
+            MakeTestInventory();
             inventory.onSlotUpdated.AddListener(UpdateInventoryText);
             InitializeInventoryText();
         }
@@ -36,6 +37,7 @@ namespace CannibalisticZombies
                 outputText += WriteSlotEntry(slot);
             }
             inventoryText.text = outputText;
+            weightText.text = WriteWeight();
         }
 
         //-//////////////////////////////////////////////////////////////////////
@@ -59,7 +61,7 @@ namespace CannibalisticZombies
             string secondHalf;
 
             // text used to space the left and right
-            string spacing = " .";
+            string spacing = " -";
 
             // string to store final line print
             string finalLine;
@@ -76,10 +78,10 @@ namespace CannibalisticZombies
             }
 
             // write line components
-            firstHalf = slot.GetPickupItemSO().name +
+            firstHalf = slot.GetPickupItemSO().itemName +
                     amountText;
-            secondHalf = slot.GetWeight() +
-                    "weight\n";
+            secondHalf = "(" + slot.GetWeight() +
+                    " weight)\n";
 
             // construct and space line
             finalLine = firstHalf;
@@ -110,6 +112,42 @@ namespace CannibalisticZombies
                 inventoryText.text.Remove(index, LINELENGTH);
                 inventoryText.text.Insert(index, WriteSlotEntry(slot));
             }
+            weightText.text = WriteWeight();
+        }
+
+        private string WriteWeight() 
+        {
+            string WeightLine = "Weight: ";
+            WeightLine += inventory.GetCurrentWeight() + "/" + inventory.GetMaxWeight();
+            
+                return  WeightLine;
+        }
+
+        //-//////////////////////////////////////////////////////////////////////
+        // Creates an Inventory for testing
+        // Used in Start
+        private void MakeTestInventory() 
+        {
+            inventory = new Inventory();
+            PickupItemSO gun = ScriptableObject.CreateInstance<PickupItemSO>();
+            PickupItemSO flash = ScriptableObject.CreateInstance<PickupItemSO>();
+            PickupItemSO ammo = ScriptableObject.CreateInstance<PickupItemSO>();
+
+            gun.itemType = ItemType.Weapon;
+            gun.itemName = "Gun";
+            gun.weight = 1.5f;
+
+            flash.itemType = ItemType.Throwable;
+            flash.itemName = "flash";
+            flash.weight = 1.0f;
+
+            ammo.itemType = ItemType.Consumable;
+            ammo.itemName = "ammo";
+            ammo.weight = 0.1f;
+
+            inventory.AddItem(gun);
+            inventory.AddItem(flash);
+            inventory.AddItem(ammo, 300);
         }
 
 
