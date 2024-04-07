@@ -49,7 +49,7 @@ MonoBehaviour:
   floorRange: {x: 2, y: 3}
   roomSize: 10
   roomHeight: 5.5
-  wallThickness: 1
+  wallThickness: 0.5
   doorPrefab: {fileID: 4642099506715493202, guid: e88edb7c73f0c6f42a44f746f48c2f5b,
     type: 3}
   doorPosition: 2

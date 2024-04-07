@@ -24,6 +24,9 @@ namespace CannibalisticZombies.ProceduralGeneration
 
         public DoorNode(RoomNode room1, RoomNode room2)
         {
+            this.room1 = room1;
+            this.room2 = room2;
+
             position = new Vector2(((float)room1.floorPos.x + (float)room2.floorPos.x) / 2, ((float)room1.floorPos.y + (float)room2.floorPos.y) / 2);
 
             float xDifference = room1.floorPos.x - room2.floorPos.x;

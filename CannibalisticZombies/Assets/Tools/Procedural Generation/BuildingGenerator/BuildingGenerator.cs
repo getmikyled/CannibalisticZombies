@@ -185,9 +185,9 @@ namespace CannibalisticZombies.ProceduralGeneration
         ///
         private void SetConnectionBetweenRooms(WallType argWallType, RoomNode room1, RoomNode room2)
         {
-            // Return if door already exists
             if (argWallType == WallType.Door || argWallType == WallType.SecondaryDoor)
             {
+                // Return if door already exists
                 foreach (DoorNode door in floors[room1.floorNum].doors)
                 {
                     if (door.CheckConnection(room1, room2))
@@ -195,9 +195,9 @@ namespace CannibalisticZombies.ProceduralGeneration
                         return;
                     }
                 }
+                floors[room1.floorNum].doors.Add(new DoorNode(room1, room2));
             }
 
-            floors[room1.floorNum].doors.Add(new DoorNode(room1, room2));
             room1.SetAdjacentRoom(room2, argWallType);
             room2.SetAdjacentRoom(room1, argWallType);
         }

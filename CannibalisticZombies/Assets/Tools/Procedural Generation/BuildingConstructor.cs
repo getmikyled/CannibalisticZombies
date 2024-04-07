@@ -85,6 +85,7 @@ namespace CannibalisticZombies.ProceduralGeneration
                 GameObject floorObject = new GameObject("Floor_" + i);
                 floorObject.transform.parent = buildingObject.transform;
                 floorObject.transform.localPosition += new Vector3(0, i * roomHeight, 0);
+                floorObject.layer = 7;
 
                 // Create Doors
                 GameObject doorsObject = new GameObject("Doors");
@@ -95,9 +96,16 @@ namespace CannibalisticZombies.ProceduralGeneration
                     doorObject.transform.parent = doorsObject.transform;
                     doorObject.transform.name = "Door";
                     doorObject.transform.localPosition = new Vector3(door.position.x * (roomSize + wallThickness), 0, door.position.y * (roomSize + wallThickness));
+
+                    // Rotate door and position accordingly based on orientation
                     if (door.orientation == DoorOrientation.Horizontal)
                     {
                         doorObject.transform.Rotate(new Vector3(0, 90, 0));
+                        doorObject.transform.localPosition -= new Vector3(0, 0, -(-roomSize / 2 + doorPosition + doorWidth / 2));
+                    }
+                    else
+                    {
+                        doorObject.transform.localPosition -= new Vector3(-(-roomSize / 2 + doorPosition + doorWidth / 2), 0, 0);
                     }
                 }
 
@@ -105,6 +113,7 @@ namespace CannibalisticZombies.ProceduralGeneration
                 {
                     // Construct Room
                     roomObject = new GameObject(room.roomType.ToString());
+                    roomObject.layer = 7;
 
                     // Create the room's furniture
                     RoomTypeSO roomPreset = GetRoomPreset(room.roomType);
@@ -126,6 +135,7 @@ namespace CannibalisticZombies.ProceduralGeneration
                         GameObject roomFloorObject = new GameObject("Floor");
                         roomFloorObject.transform.parent = roomObject.transform;
                         roomFloorObject.transform.localPosition = Vector3.zero;
+                        roomFloorObject.layer = 7;
                         roomFloorObject.AddComponent<MeshFilter>().sharedMesh = floorMesh;
                         roomFloorObject.AddComponent<MeshRenderer>().sharedMaterial = roomPreset.floorMaterial;
                         BoxCollider floorCollider = roomFloorObject.AddComponent<BoxCollider>();

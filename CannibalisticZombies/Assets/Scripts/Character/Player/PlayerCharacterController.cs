@@ -60,10 +60,16 @@ namespace CannibalisticZombies
         {
             grounded = Physics.Raycast(transform.position, Vector3.down, pHeight * 0.5f + 0.2f, ground);
             PInput();
-            if (grounded) rb.drag = groundDrag;
-            else rb.drag = 0;
-
-
+            if (grounded)
+            {
+                rb.drag = groundDrag;
+                rb.useGravity = false;
+            }
+            else
+            {
+                rb.drag = 0;
+                rb.useGravity = true;
+            }
         }
 
         private void FixedUpdate()
