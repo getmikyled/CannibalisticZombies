@@ -17,16 +17,13 @@ namespace CannibalisticZombies.ProceduralGeneration
 
         [Space]
         [Header("Door Properties")]
+        [SerializeField] private GameObject doorPrefab;
         [SerializeField] private float doorPosition = 0;
         [SerializeField] private float doorWidth = 1.5f;
         [SerializeField] private float doorHeight = 2f;
 
-
         [Space]
-        [SerializeField] private Material wallMaterial;
-        [SerializeField] private Material floorMaterial;
-
-        [Space]
+        [SerializeField] private RoomTypeSO defaultPreset;
         [SerializeField] private RoomTypeSO bedroomPreset;
         [SerializeField] private RoomTypeSO bathroomPreset;
         [SerializeField] private RoomTypeSO kitchenPreset;
@@ -39,6 +36,7 @@ namespace CannibalisticZombies.ProceduralGeneration
 
         BuildingGenerator building;
         private GameObject buildingObject;
+        private GameObject roomObject;
 
         bool finishedBuilding = false;
 
@@ -88,13 +86,57 @@ namespace CannibalisticZombies.ProceduralGeneration
                 floorObject.transform.parent = buildingObject.transform;
                 floorObject.transform.localPosition += new Vector3(0, i * roomHeight, 0);
 
+                // Create Doors
+                GameObject doorsObject = new GameObject("Doors");
+                doorsObject.transform.localPosition = new Vector3(0, i * roomHeight, 0);
+                foreach (DoorNode door in building.floors[i].doors)
+                {
+                    GameObject doorObject = Instantiate(doorPrefab);
+                    doorObject.transform.parent = doorsObject.transform;
+                    doorObject.transform.name = "Door";
+                    doorObject.transform.localPosition = new Vector3(door.position.x * (roomSize + wallThickness), 0, door.position.y * (roomSize + wallThickness));
+                    if (door.orientation == DoorOrientation.Horizontal)
+                    {
+                        doorObject.transform.Rotate(new Vector3(0, 90, 0));
+                    }
+                }
+
                 foreach (RoomNode room in building.floors[i].rooms)
                 {
                     // Construct Room
-                    GameObject roomObject = new GameObject(room.roomType.ToString());
+                    roomObject = new GameObject(room.roomType.ToString());
+
+                    // Create the room's furniture
+                    RoomTypeSO roomPreset = GetRoomPreset(room.roomType);
+                    if (roomPreset != null)
+                    {
+                        GameObject interiorObject = DetermineRoomInterior(roomPreset);
+                        if (interiorObject != null)
+                        {
+                            interiorObject = Instantiate(interiorObject);
+                            interiorObject.name = room.roomType + " Interior";
+                            interiorObject.transform.parent = roomObject.transform;
+                            interiorObject.transform.localPosition = Vector3.zero;
+                        }
+                    }
+
+                    // Create the room's flooring
+                    if (room.roomType != RoomType.Empty)
+                    {
+                        GameObject roomFloorObject = new GameObject("Floor");
+                        roomFloorObject.transform.parent = roomObject.transform;
+                        roomFloorObject.transform.localPosition = Vector3.zero;
+                        roomFloorObject.AddComponent<MeshFilter>().sharedMesh = floorMesh;
+                        roomFloorObject.AddComponent<MeshRenderer>().sharedMaterial = roomPreset.floorMaterial;
+                        BoxCollider floorCollider = roomFloorObject.AddComponent<BoxCollider>();
+                        floorCollider.enabled = true;
+
+                        roomFloorObject.layer = 10;              
+                    }
+
                     Mesh wallsMesh = new Mesh();
                     roomObject.AddComponent<MeshFilter>().sharedMesh = wallsMesh;
-                    roomObject.AddComponent<MeshRenderer>().sharedMaterial = wallMaterial;
+                    roomObject.AddComponent<MeshRenderer>().sharedMaterial = roomPreset.wallMaterial;
                     MeshCollider collider = roomObject.AddComponent<MeshCollider>();
                     collider.convex = false;
                     collider.sharedMesh = wallsMesh;
@@ -108,20 +150,6 @@ namespace CannibalisticZombies.ProceduralGeneration
                     vertIndex = 0;
                     triIndex = 0;
 
-                    // Create the room's flooring
-                    if (room.roomType != RoomType.Empty)
-                    {
-                        GameObject roomFloorObject = new GameObject("Floor");
-                        roomFloorObject.transform.parent = roomObject.transform;
-                        roomFloorObject.transform.localPosition = Vector3.zero;
-                        roomFloorObject.AddComponent<MeshFilter>().sharedMesh = floorMesh;
-                        roomFloorObject.AddComponent<MeshRenderer>().sharedMaterial = floorMaterial;
-                        BoxCollider floorCollider = roomFloorObject.AddComponent<BoxCollider>();
-                        floorCollider.enabled = true;
-
-                        roomFloorObject.layer = 10;              
-                    }
-
                     // Create the room's walls
                     foreach (RoomNode adjacentRoom in room.adjacentRooms.Keys)
                     {
@@ -132,16 +160,6 @@ namespace CannibalisticZombies.ProceduralGeneration
                     wallsMesh.vertices = vertices;
                     wallsMesh.triangles = triangles;
                     wallsMesh.RecalculateNormals();
-
-                    // Create the room's furniture
-                    GameObject roomPreset = DetermineRoomPreset(room.roomType);
-                    if (roomPreset != null)
-                    {
-                        GameObject interiorObject = Instantiate(roomPreset);
-                        interiorObject.name = room.roomType + " Interior";
-                        interiorObject.transform.parent = roomObject.transform;
-                        interiorObject.transform.localPosition = Vector3.zero;
-                    }
                 }
             }
 
@@ -177,14 +195,15 @@ namespace CannibalisticZombies.ProceduralGeneration
         {
             
             float roomWalLength = roomSize + wallThickness * 2;
+            float calculatedDoorPosition = doorPosition - roomSize / 2;
 
             switch (argDirection)
             {
                 case Direction.North:
-                    vertices[vertIndex] = new Vector3(doorPosition - roomSize / 2, centerPoint.y, roomSize / 2);
-                    vertices[vertIndex + 1] = new Vector3(doorPosition - roomSize / 2, centerPoint.y + doorHeight, roomSize / 2);
-                    vertices[vertIndex + 2] = new Vector3(doorPosition - roomSize / 2 + doorWidth, centerPoint.y + doorHeight, roomSize / 2);
-                    vertices[vertIndex + 3] = new Vector3(doorPosition - roomSize / 2 + doorWidth, centerPoint.y, roomSize / 2);
+                    vertices[vertIndex] = new Vector3(calculatedDoorPosition, centerPoint.y, roomSize / 2);
+                    vertices[vertIndex + 1] = new Vector3(calculatedDoorPosition, centerPoint.y + doorHeight, roomSize / 2);
+                    vertices[vertIndex + 2] = new Vector3(calculatedDoorPosition + doorWidth, centerPoint.y + doorHeight, roomSize / 2);
+                    vertices[vertIndex + 3] = new Vector3(calculatedDoorPosition + doorWidth, centerPoint.y, roomSize / 2);
                     vertices[vertIndex + 4] = new Vector3(roomWalLength / 2, centerPoint.y, roomSize / 2);
                     vertices[vertIndex + 5] = new Vector3(roomWalLength / 2, centerPoint.y + roomHeight, roomSize / 2);
                     vertices[vertIndex + 6] = new Vector3(0, centerPoint.y + roomHeight, roomSize / 2);
@@ -192,10 +211,10 @@ namespace CannibalisticZombies.ProceduralGeneration
                     vertices[vertIndex + 8] = new Vector3(-roomWalLength / 2, centerPoint.y, roomSize / 2);
                     break;
                 case Direction.South:
-                    vertices[vertIndex] = new Vector3(doorPosition - roomSize / 2 + doorWidth, centerPoint.y, -roomSize / 2);
-                    vertices[vertIndex + 1] = new Vector3(doorPosition - roomSize / 2 + doorWidth, centerPoint.y + doorHeight, -roomSize / 2);
-                    vertices[vertIndex + 2] = new Vector3(doorPosition - roomSize / 2, centerPoint.y + doorHeight, -roomSize / 2);
-                    vertices[vertIndex + 3] = new Vector3(doorPosition - roomSize / 2, centerPoint.y, -roomSize / 2);
+                    vertices[vertIndex] = new Vector3(calculatedDoorPosition + doorWidth, centerPoint.y, -roomSize / 2);
+                    vertices[vertIndex + 1] = new Vector3(calculatedDoorPosition + doorWidth, centerPoint.y + doorHeight, -roomSize / 2);
+                    vertices[vertIndex + 2] = new Vector3(calculatedDoorPosition, centerPoint.y + doorHeight, -roomSize / 2);
+                    vertices[vertIndex + 3] = new Vector3(calculatedDoorPosition, centerPoint.y, -roomSize / 2);
                     vertices[vertIndex + 4] = new Vector3(-roomWalLength / 2, centerPoint.y, -roomSize / 2);
                     vertices[vertIndex + 5] = new Vector3(-roomWalLength / 2, centerPoint.y + roomHeight, -roomSize / 2);
                     vertices[vertIndex + 6] = new Vector3(0, centerPoint.y + roomHeight, -roomSize / 2);
@@ -203,10 +222,10 @@ namespace CannibalisticZombies.ProceduralGeneration
                     vertices[vertIndex + 8] = new Vector3(roomWalLength / 2, centerPoint.y, -roomSize / 2);
                     break;
                 case Direction.East:
-                    vertices[vertIndex] = new Vector3(roomSize / 2, centerPoint.y, doorPosition - roomSize / 2 + doorWidth);
-                    vertices[vertIndex + 1] = new Vector3(roomSize / 2, centerPoint.y + doorHeight, doorPosition - roomSize / 2 + doorWidth);
-                    vertices[vertIndex + 2] = new Vector3(roomSize / 2, centerPoint.y + doorHeight, doorPosition - roomSize / 2);
-                    vertices[vertIndex + 3] = new Vector3(roomSize / 2, centerPoint.y, doorPosition - roomSize / 2);
+                    vertices[vertIndex] = new Vector3(roomSize / 2, centerPoint.y, calculatedDoorPosition + doorWidth);
+                    vertices[vertIndex + 1] = new Vector3(roomSize / 2, centerPoint.y + doorHeight, calculatedDoorPosition + doorWidth);
+                    vertices[vertIndex + 2] = new Vector3(roomSize / 2, centerPoint.y + doorHeight, calculatedDoorPosition);
+                    vertices[vertIndex + 3] = new Vector3(roomSize / 2, centerPoint.y, calculatedDoorPosition);
                     vertices[vertIndex + 4] = new Vector3(roomSize / 2, centerPoint.y, -roomWalLength / 2);
                     vertices[vertIndex + 5] = new Vector3(roomSize / 2, centerPoint.y + roomHeight, -roomWalLength / 2);
                     vertices[vertIndex + 6] = new Vector3(roomSize / 2, centerPoint.y + roomHeight, 0);
@@ -214,10 +233,10 @@ namespace CannibalisticZombies.ProceduralGeneration
                     vertices[vertIndex + 8] = new Vector3(roomSize / 2, centerPoint.y, roomWalLength / 2);
                     break;
                 case Direction.West:
-                    vertices[vertIndex] = new Vector3(-roomSize / 2, centerPoint.y, doorPosition - roomSize / 2);
-                    vertices[vertIndex + 1] = new Vector3(-roomSize / 2, centerPoint.y + doorHeight, doorPosition - roomSize / 2);
-                    vertices[vertIndex + 2] = new Vector3(-roomSize / 2, centerPoint.y + doorHeight, doorPosition - roomSize / 2 + doorWidth);
-                    vertices[vertIndex + 3] = new Vector3(-roomSize / 2, centerPoint.y, doorPosition - roomSize / 2 + doorWidth);
+                    vertices[vertIndex] = new Vector3(-roomSize / 2, centerPoint.y, calculatedDoorPosition);
+                    vertices[vertIndex + 1] = new Vector3(-roomSize / 2, centerPoint.y + doorHeight, calculatedDoorPosition);
+                    vertices[vertIndex + 2] = new Vector3(-roomSize / 2, centerPoint.y + doorHeight, calculatedDoorPosition + doorWidth);
+                    vertices[vertIndex + 3] = new Vector3(-roomSize / 2, centerPoint.y, calculatedDoorPosition + doorWidth);
                     vertices[vertIndex + 4] = new Vector3(-roomSize / 2, centerPoint.y, roomWalLength / 2);
                     vertices[vertIndex + 5] = new Vector3(-roomSize / 2, centerPoint.y + roomHeight, roomWalLength / 2);
                     vertices[vertIndex + 6] = new Vector3(-roomSize / 2, centerPoint.y + roomHeight, 0);
@@ -299,35 +318,39 @@ namespace CannibalisticZombies.ProceduralGeneration
 
         ///-////////////////////////////////////////////////////////////////////
         ///
-        private GameObject DetermineRoomPreset(RoomType argRoomType)
+
+
+        ///-////////////////////////////////////////////////////////////////////
+        ///
+        private RoomTypeSO GetRoomPreset(RoomType argRoomType)
         {
             switch(argRoomType) {
                 case RoomType.Bedroom:
-                    return DeterminePreset(bedroomPreset);
+                    return bedroomPreset;
                 case RoomType.Bathroom:
-                    return DeterminePreset(bathroomPreset);
+                    return bathroomPreset;
                 case RoomType.Kitchen:
-                    return DeterminePreset(kitchenPreset);
+                    return kitchenPreset;
                 case RoomType.DiningRoom:
-                    return DeterminePreset(diningRoomPreset);
+                    return diningRoomPreset;
                 case RoomType.LivingRoom:
-                    return DeterminePreset(livingRoomPreset);
+                    return livingRoomPreset;
                 case RoomType.Hallway:
-                    return DeterminePreset(hallwayPreset);
+                    return hallwayPreset;
                 case RoomType.Office:
-                    return DeterminePreset(officePreset);
+                    return officePreset;
                 case RoomType.Stairs:
-                    return DeterminePreset(stairwayPreset);
+                    return stairwayPreset;
                 case RoomType.Basement:
-                    return DeterminePreset(basementPreset);
+                    return basementPreset;
                 default:
-                    return null;
+                    return defaultPreset;
             }
         }
 
         ///-////////////////////////////////////////////////////////////////////
         ///
-        private GameObject DeterminePreset(RoomTypeSO argRoomTypeSO)
+        private GameObject DetermineRoomInterior(RoomTypeSO argRoomTypeSO)
         {
             if (argRoomTypeSO.genericRoomPresets.Length > 0)
             {

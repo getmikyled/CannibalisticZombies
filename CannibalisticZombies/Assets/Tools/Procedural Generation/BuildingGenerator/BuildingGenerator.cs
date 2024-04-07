@@ -21,8 +21,9 @@ namespace CannibalisticZombies.ProceduralGeneration
         public int roomCount;
         public int roomIndex = 0;
         public RoomNode rootNode;
-        
-        ///-///////////////////////////////////oot
+
+        ///-////////////////////////////////////////////////////////////////////
+        ///
         public BuildingGenerator(int argGridWidth, int argGridHeight, int argFloorCount)
         {
             gridWidth = Mathf.Clamp(argGridWidth, MIN_WIDTH, argGridWidth);
@@ -184,6 +185,19 @@ namespace CannibalisticZombies.ProceduralGeneration
         ///
         private void SetConnectionBetweenRooms(WallType argWallType, RoomNode room1, RoomNode room2)
         {
+            // Return if door already exists
+            if (argWallType == WallType.Door || argWallType == WallType.SecondaryDoor)
+            {
+                foreach (DoorNode door in floors[room1.floorNum].doors)
+                {
+                    if (door.CheckConnection(room1, room2))
+                    {
+                        return;
+                    }
+                }
+            }
+
+            floors[room1.floorNum].doors.Add(new DoorNode(room1, room2));
             room1.SetAdjacentRoom(room2, argWallType);
             room2.SetAdjacentRoom(room1, argWallType);
         }

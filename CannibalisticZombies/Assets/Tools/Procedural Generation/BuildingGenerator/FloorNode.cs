@@ -15,6 +15,8 @@ namespace CannibalisticZombies.ProceduralGeneration
         public RoomNode[,] rooms;
         public RoomNode stairsNode;
 
+        public List<DoorNode> doors;
+
         ///-////////////////////////////////////////////////////////////////////
         ///
         public FloorNode(int argGridWidth, int argGridHeight, int argFloorNumber)
@@ -24,6 +26,7 @@ namespace CannibalisticZombies.ProceduralGeneration
             gridHeight = argGridHeight;
 
             rooms = new RoomNode[gridWidth, gridHeight];
+            doors = new List<DoorNode>();
         }
 
         ///-////////////////////////////////////////////////////////////////////

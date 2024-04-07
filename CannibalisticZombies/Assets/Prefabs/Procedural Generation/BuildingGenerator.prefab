@@ -50,11 +50,12 @@ MonoBehaviour:
   roomSize: 10
   roomHeight: 5.5
   wallThickness: 1
+  doorPrefab: {fileID: 4642099506715493202, guid: e88edb7c73f0c6f42a44f746f48c2f5b,
+    type: 3}
   doorPosition: 2
   doorWidth: 2
   doorHeight: 3
-  wallMaterial: {fileID: 2100000, guid: 5e23d3bf581797a4b86c280ce95790cc, type: 2}
-  floorMaterial: {fileID: 2100000, guid: 51d3d1d257bc7974fa80c6c394ae5037, type: 2}
+  defaultPreset: {fileID: 11400000, guid: af296afefbfc10643aafc3bc86e2fb80, type: 2}
   bedroomPreset: {fileID: 11400000, guid: d8489039dfb327746b9997c0af9c8922, type: 2}
   bathroomPreset: {fileID: 11400000, guid: 433ddef12db9c774a9a2d70ccc7e02c3, type: 2}
   kitchenPreset: {fileID: 11400000, guid: 35bd010fadf62274eb0fc72b003a2289, type: 2}
