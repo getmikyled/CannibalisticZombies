@@ -17,7 +17,7 @@ namespace CannibalisticZombies
         [SerializeField] private float sprintDelay;
         [SerializeField] private float crouchSpeed;
         [SerializeField] private float groundDrag;
-
+        
         [SerializeField] private Transform orientation;
 
         private float horizontalInput;
@@ -32,9 +32,12 @@ namespace CannibalisticZombies
         private float cYscale;
 
         private bool grounded;
-        private bool crun;
+        private bool canRun;
         private float rStart;
-        private float rStop;
+        private float runStop;
+        private float currentStamina;
+
+        private bool control;
 
         private Rigidbody rb;
 
@@ -48,11 +51,13 @@ namespace CannibalisticZombies
 
         private void Start()
         {
+            control = true;
             rStart = Time.time;
+            currentStamina = sprintStamina;
 
             rb = GetComponent<Rigidbody>();
             rb.freezeRotation = true;
-            crun = true;
+            canRun = true;
             nYscale = transform.localScale.y;
         }
 
@@ -70,6 +75,10 @@ namespace CannibalisticZombies
         {
             Move();
         }
+        ////////////////////////////////////////////////////////////////////////
+        ///
+        /// Player Input Method
+        ///  
         void PInput()
         {
             horizontalInput = Input.GetAxisRaw("Horizontal");
@@ -78,8 +87,14 @@ namespace CannibalisticZombies
             if (Input.GetKeyDown(crouchKey))
             {
                 transform.localScale = new Vector3(transform.localScale.x, cYscale, transform.localScale.z);
+                //Downwards force is added so player does not float in mid-air
                 rb.AddForce(Vector3.down * 5f, ForceMode.Impulse);
 
+            }
+
+            if (Input.GetKeyUp(crouchKey))
+            {
+                transform.localScale = new Vector3(transform.localScale.x, nYscale, transform.localScale.z);
             }
 
             if (Input.GetKeyDown(sprintKey))
@@ -87,24 +102,26 @@ namespace CannibalisticZombies
                 rStart = Time.time;
             }
 
-            if (Input.GetKeyUp(crouchKey))
+            if (state == MovementState.sprinting)
             {
-                transform.localScale = new Vector3(transform.localScale.x, nYscale, transform.localScale.z);
+                currentStamina = sprintStamina - (Time.time - rStart);
             }
             if (state == MovementState.sprinting && rStart + sprintStamina < Time.time)
             {
-                crun = false;
-                rStop = Time.time;
+                canRun = false;
+                runStop = Time.time;
                 state = MovementState.walking;
                 moveSpeed = walkSpeed;
                 //                Debug.Log("Run Stop");
           //      Debug.Log(rStart);
             }
-            if ((!crun && rStop + sprintDelay < Time.time))
+            if ((!canRun && runStop + sprintDelay < Time.time))
             {
-                crun = true;
+                canRun = true;
+                currentStamina = sprintStamina;
                 //               Debug.Log("CAN RUN");
             }
+
 
             StateHandler();
          //   Debug.Log(Time.time);
@@ -112,14 +129,24 @@ namespace CannibalisticZombies
 
 
         }
-
+        ////////////////////////////////////////////////////////////////////////
+        ///
+        /// Move Method
+        ///  
         void Move()
         {
-            moveDir = orientation.forward * verticalInput + orientation.right * horizontalInput;
+            if (control)
+            {
+                moveDir = orientation.forward * verticalInput + orientation.right * horizontalInput;
 
-            rb.AddForce(moveDir.normalized * moveSpeed * 10f, ForceMode.Force);
+                rb.AddForce(moveDir.normalized * moveSpeed * 10f, ForceMode.Force);
+            }
+
         }
-
+        ////////////////////////////////////////////////////////////////////////
+        ///
+        /// State Handler Method
+        ///  
         private void StateHandler()
         {
             if (Input.GetKey(crouchKey))
@@ -128,7 +155,7 @@ namespace CannibalisticZombies
                 moveSpeed = crouchSpeed;
 
             }
-            else if (Input.GetKey(sprintKey) && crun)
+            else if (Input.GetKey(sprintKey) && canRun)
             {
                 state = MovementState.sprinting;
                 moveSpeed = sprintSpeed;
@@ -140,6 +167,10 @@ namespace CannibalisticZombies
                 moveSpeed = walkSpeed;
             }
         }
+        ////////////////////////////////////////////////////////////////////////
+        ///
+        /// Max Speed calculation method
+        ///  
         private void maxSpeed()
         {
             Vector3 fVel = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
@@ -149,6 +180,15 @@ namespace CannibalisticZombies
                 rb.velocity = new Vector3(mVel.x, rb.velocity.y, mVel.z);
 
             }
+        }
+
+        ////////////////////////////////////////////////////////////////////////
+        ///
+        /// Sprint getter function
+        ///  
+        public bool CanSprint()
+        {
+            return canRun;
         }
     }
 }
