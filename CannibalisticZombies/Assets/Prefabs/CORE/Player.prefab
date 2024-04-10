@@ -111,6 +111,9 @@ MonoBehaviour:
   ground:
     serializedVersion: 2
     m_Bits: 1024
+  stairsLayerMask:
+    serializedVersion: 2
+    m_Bits: 512
 --- !u!114 &4180114077072830171
 MonoBehaviour:
   m_ObjectHideFlags: 0

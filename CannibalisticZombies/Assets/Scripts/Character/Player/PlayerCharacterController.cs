@@ -28,10 +28,12 @@ namespace CannibalisticZombies
 
         [SerializeField] private float pHeight;
         [SerializeField] private LayerMask ground;
+        [SerializeField] private LayerMask stairsLayerMask;
         private float nYscale;
         private float cYscale;
 
         private bool grounded;
+        private bool onStairs = false;
         private bool canRun;
         private float rStart;
         private float runStop;
@@ -64,16 +66,18 @@ namespace CannibalisticZombies
         private void Update()
         {
             grounded = Physics.Raycast(transform.position, Vector3.down, pHeight * 0.5f + 0.2f, ground);
+
+            onStairs = Physics.Raycast(transform.position, Vector3.down, pHeight * 0.5f + 0.2f, stairsLayerMask);
+            rb.useGravity = !onStairs;
+
             PInput();
             if (grounded)
             {
                 rb.drag = groundDrag;
-                rb.useGravity = false;
             }
             else
             {
                 rb.drag = 0;
-                rb.useGravity = true;
             }
         }
 
