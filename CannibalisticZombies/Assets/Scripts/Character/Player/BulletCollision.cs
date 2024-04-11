@@ -3,29 +3,27 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BulletCollision : MonoBehaviour
-{
-    // Start is called before the first frame update
-    void Start()
+namespace CannibalisticZombies {
+    public class BulletCollision : MonoBehaviour
     {
-        
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+        /// -////////////////////////////////////////////////////////////////////
+        /// author: Ashley Roman
+        /// combat system
+        /// 
 
-    private void OnTriggerEnter(Collider collision)
-    {
-        if (collision.gameObject.CompareTag("Enemy"))
+        [SerializeField] protected float damage = 5f;
+
+        private void OnTriggerEnter(Collider collision)
         {
-            Debug.Log("Collision");
-            Destroy(collision.gameObject);
-            //Destroy(gameObject);
-        }
+            if (collision.gameObject.CompareTag("Enemy"))
+            {
+                EnemyBase enemy = collision.gameObject.GetComponent<EnemyBase>();
+                enemy.OnHit(damage);
+                Destroy(gameObject);
+            }
 
+        }
     }
 
 }
