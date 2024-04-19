@@ -2,19 +2,24 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace CannibalisticZombies 
 {
     public class InventoryUI : MonoBehaviour
     {
-        public Inventory inventory;
-        public TextMeshProUGUI inventoryText;
-        public TextMeshProUGUI weightText;
+        [SerializeField] private Inventory inventory;
+        [SerializeField] private TextMeshProUGUI inventoryText;
+        [SerializeField] private Image inventoryImage;
+        [SerializeField] private TextMeshProUGUI weightText;
+        [SerializeField] private Image weightImage;
+        [SerializeField] private GameObject inventoryUI;
+
         // number of characters per line
         public static int LINELENGTH = 40;
 
         // title of Inventory
-        public string initialText = "";
+        [SerializeField] private string initialText = "Inventory\n";
         // Start is called before the first frame update
         void Start()
         {
@@ -23,6 +28,17 @@ namespace CannibalisticZombies
             InitializeInventoryText();
         }
 
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.Tab))
+            {
+                
+                inventoryText.enabled = !inventoryText.enabled;
+                inventoryImage.visible = !inventoryImage.visible;
+                weightText.enabled = !weightText.enabled;
+                weightImage.visible = !weightImage.visible;
+            }
+        }
 
         //-//////////////////////////////////////////////////////////////////////
         // used in Start to create the initial Inventory text list
@@ -80,12 +96,12 @@ namespace CannibalisticZombies
             // write line components
             firstHalf = slot.GetPickupItemSO().itemName +
                     amountText;
-            secondHalf = "(" + slot.GetWeight() +
+            secondHalf = " (" + slot.GetWeight() +
                     " weight)\n";
 
             // construct and space line
             finalLine = firstHalf;
-            for (int i = 0; i < LINELENGTH - firstHalf.Length - secondHalf.Length; i += spacing.Length) 
+            for (int i = firstHalf.Length; i < LINELENGTH - secondHalf.Length; i += spacing.Length) 
             {
                 finalLine += spacing;
             }
@@ -150,6 +166,7 @@ namespace CannibalisticZombies
             inventory.AddItem(ammo, 300);
         }
 
+        
 
     }
 }
