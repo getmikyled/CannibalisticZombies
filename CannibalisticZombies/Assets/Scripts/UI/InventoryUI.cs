@@ -1,3 +1,5 @@
+using Microsoft.Unity.VisualStudio.Editor;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -10,16 +12,17 @@ namespace CannibalisticZombies
     {
         [SerializeField] private Inventory inventory;
         [SerializeField] private TextMeshProUGUI inventoryText;
-        [SerializeField] private Image inventoryImage;
+        [SerializeField] private UnityEngine.UI.Image inventoryImage;
         [SerializeField] private TextMeshProUGUI weightText;
-        [SerializeField] private Image weightImage;
-        [SerializeField] private GameObject inventoryUI;
+        [SerializeField] private UnityEngine.UI.Image weightImage;
+
+
 
         // number of characters per line
         public static int LINELENGTH = 40;
 
         // title of Inventory
-        [SerializeField] private string initialText = "Inventory\n";
+        private string initialText = "Inventory\n";
         // Start is called before the first frame update
         void Start()
         {
@@ -32,13 +35,21 @@ namespace CannibalisticZombies
         {
             if (Input.GetKeyDown(KeyCode.Tab))
             {
-                
-                inventoryText.enabled = !inventoryText.enabled;
-                inventoryImage.visible = !inventoryImage.visible;
-                weightText.enabled = !weightText.enabled;
-                weightImage.visible = !weightImage.visible;
+                ToggleInventoryMenu();
             }
         }
+
+        //-///////////////////////////////////////////////////////////////////////
+        // called by the Menu keybind to enable/disable menu
+        private void ToggleInventoryMenu()
+        {
+            inventoryText.enabled = !inventoryText.enabled;
+            weightText.enabled = !weightText.enabled;
+
+            inventoryImage.enabled = !inventoryImage.enabled;
+            weightImage.enabled = !weightImage.enabled;
+        }
+
 
         //-//////////////////////////////////////////////////////////////////////
         // used in Start to create the initial Inventory text list

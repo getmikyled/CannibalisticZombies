@@ -55,7 +55,6 @@ MonoBehaviour:
   inventoryText: {fileID: 1875573962067432929}
   weightText: {fileID: 8993576115706927509}
   inventoryUI: {fileID: 1160238782277497367}
-  initialText: Inventory\n
 --- !u!1 &2792298117678468755
 GameObject:
   m_ObjectHideFlags: 0
