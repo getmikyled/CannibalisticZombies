@@ -1,0 +1,67 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &7740663245049524904
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2857382079113917924}
+  - component: {fileID: 352532819631641416}
+  m_Layer: 0
+  m_Name: BuildingGenerator
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2857382079113917924
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7740663245049524904}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &352532819631641416
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7740663245049524904}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4d6f049d28cbad146a38e89eb5fdd3b8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  widthRange: {x: 2, y: 5}
+  heightRange: {x: 2, y: 5}
+  floorRange: {x: 2, y: 3}
+  roomSize: 10
+  roomHeight: 5.5
+  wallThickness: 0.5
+  doorPrefab: {fileID: 4642099506715493202, guid: e88edb7c73f0c6f42a44f746f48c2f5b,
+    type: 3}
+  doorPosition: 2
+  doorWidth: 2
+  doorHeight: 3
+  defaultPreset: {fileID: 11400000, guid: af296afefbfc10643aafc3bc86e2fb80, type: 2}
+  bedroomPreset: {fileID: 11400000, guid: d8489039dfb327746b9997c0af9c8922, type: 2}
+  bathroomPreset: {fileID: 11400000, guid: 433ddef12db9c774a9a2d70ccc7e02c3, type: 2}
+  kitchenPreset: {fileID: 11400000, guid: 35bd010fadf62274eb0fc72b003a2289, type: 2}
+  diningRoomPreset: {fileID: 11400000, guid: 0920ab6ea1fed2e4f9ada3a499c76d83, type: 2}
+  livingRoomPreset: {fileID: 11400000, guid: eba5fc0477ede3248a7db03bf4382de1, type: 2}
+  officePreset: {fileID: 11400000, guid: 193a4aeb4630f3c41bf02634540f60bb, type: 2}
+  hallwayPreset: {fileID: 11400000, guid: 8622487c9536aec4583f758f3c2d09b5, type: 2}
+  stairwayPreset: {fileID: 11400000, guid: 921f9d904e925684ba7b70bdcd2d049a, type: 2}
+  basementPreset: {fileID: 11400000, guid: d6fe38c486453114390ae9cac4f892b1, type: 2}

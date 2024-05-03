@@ -11,10 +11,11 @@ TagManager:
   - 
   - Water
   - UI
+  - InteractionObject
+  - Environment
   - 
   - Player
-  - 
-  - 
+  - Stairs
   - Ground
   - 
   - 
