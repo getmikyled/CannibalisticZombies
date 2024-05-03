@@ -207,6 +207,7 @@ GameObject:
   - component: {fileID: 4377999809565734541}
   - component: {fileID: 4027971927924826222}
   - component: {fileID: 3168915820249930506}
+  - component: {fileID: 2184891428720768451}
   m_Layer: 0
   m_Name: Pixel Camera
   m_TagString: Untagged
@@ -332,3 +333,16 @@ MonoBehaviour:
     mipBias: 0
     varianceClampScale: 0.9
     contrastAdaptiveSharpening: 0
+--- !u!114 &2184891428720768451
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8200163603696368712}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 96ccd10ed88b1bc4cac820f9cc673389, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pixelatedCamera: {fileID: 4377999809565734541}
