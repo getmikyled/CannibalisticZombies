@@ -9,8 +9,8 @@ namespace CannibalisticZombies
     public class EnemyBase : CharacterBase
     {
         [Header("Enemy Properties")]
-        [SerializeField] protected float damage = 5f;
         [SerializeField] protected float stoppingDistance = 5f;
+        [SerializeField] protected float health = 15;
 
         ///-////////////////////////////////////////////////////////////////////
         ///
@@ -30,8 +30,6 @@ namespace CannibalisticZombies
         ///
         public void OnHit(float argDamage)
         {
-            // Set Animation
-
             TakeDamage(argDamage);
         }
 
@@ -39,7 +37,14 @@ namespace CannibalisticZombies
         ///
         protected void TakeDamage(float argDamage)
         {
+            health -= argDamage;
 
+            if (health <= 0)
+            {
+                Destroy(gameObject);
+            } 
+            
         }
+
     }
 }
