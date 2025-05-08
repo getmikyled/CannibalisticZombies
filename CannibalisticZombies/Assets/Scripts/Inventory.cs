@@ -6,22 +6,20 @@ using UnityEngine.Events;
 
 namespace CannibalisticZombies 
 {
-    public class Inventory : MonoBehaviour
+    public class Inventory
     {
         public Dictionary<string, InventorySlot> inventory;
         private float maxWeight;
         private float currentWeight;
-        public UnityEvent onWeightUpdated;
+        public UnityEvent onWeightUpdated = new UnityEvent();
+        public UnityEvent<string> onSlotUpdated = new UnityEvent<string>();
 
         public Inventory(float startWeight = 0f, float startMaxWeight = 100f)
         {
             maxWeight = startMaxWeight;
-            SetCurrentWeight(startWeight);
+            currentWeight = startWeight;
             inventory = new Dictionary<string, InventorySlot>();
-            if (onWeightUpdated != null)
-            {
-                onWeightUpdated = new UnityEvent();
-            }
+
 
         }
 
@@ -45,6 +43,7 @@ namespace CannibalisticZombies
 
             }
             UpdateCurrentWeight(amount * newItem.weight);
+            onSlotUpdated.Invoke(newItem.itemName);
             return true;
         }
 
@@ -63,6 +62,7 @@ namespace CannibalisticZombies
                 {
                     inventory.Remove(item.itemName);
                 }
+                onSlotUpdated.Invoke(item.itemName);
                 return true;
             }
             return false;
